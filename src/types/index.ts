@@ -42,3 +42,17 @@ export interface MaintenanceRecord {
   createdAt: ISODate;
   updatedAt: ISODate;
 }
+
+export type {
+  AddServiceFormData,
+  AnalyticsAnnualItem,
+  AnalyticsBreakdownItem,
+  AnalyticsImpactItem,
+  ImportMappingRow,
+  LifecycleMetric,
+  LifecycleTimelineItem,
+  MaintenanceListItem,
+  SelectOption,
+  ServiceRecordFields,
+  ServiceRecordFormData,
+} from './viewModels';
