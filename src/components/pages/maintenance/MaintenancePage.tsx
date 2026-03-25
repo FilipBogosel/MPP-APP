@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react';
-import { carSelectOptions, maintenanceListData } from '../../../api/mockData';
+import { carSelectOptions, maintenanceListData } from '@/api/mockData';
+import { Pagination } from '@/components/Pagination';
+import { cls } from '@/styles/classes';
 import { MaintenanceContent } from './MaintenanceContent';
 import { MaintenanceHeader } from './MaintenanceHeader';
-import { MaintenancePagination } from './MaintenancePagination';
 import { getCurrentPageData, ITEMS_PER_PAGE } from './maintenanceUtils';
 
 export function MaintenancePage() {
@@ -16,12 +17,12 @@ export function MaintenancePage() {
   );
 
   return (
-    <div className="app-page">
-      <div className="app-page-shell">
+    <div className={cls.page}>
+      <div className={cls.pageShell}>
         <MaintenanceHeader viewMode={viewMode} onModeChange={setViewMode} />
 
         <div className="mb-6 max-w-xs">
-          <label htmlFor="carSelect" className="mb-1 block text-sm font-medium text-gray-700">
+          <label htmlFor="carSelect" className={`mb-1 ${cls.label}`}>
             Select your current car
           </label>
           <select
@@ -40,7 +41,7 @@ export function MaintenancePage() {
 
         <MaintenanceContent data={currentData} viewMode={viewMode} />
 
-        <MaintenancePagination
+        <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
           totalItems={maintenanceListData.length}

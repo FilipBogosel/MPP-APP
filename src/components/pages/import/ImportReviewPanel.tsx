@@ -1,4 +1,5 @@
 import { AlertCircle } from 'lucide-react';
+import { cls } from '@/styles/classes';
 
 export function ImportReviewPanel() {
   return (
@@ -20,7 +21,7 @@ export function ImportReviewPanel() {
         <div className="mt-8 flex justify-center">
           <button
             disabled
-            className="w-full cursor-not-allowed rounded-lg border border-gray-200 bg-gray-100 px-8 py-3 text-base font-medium text-gray-400 transition-colors md:w-auto"
+            className={`${cls.btnDisabled} w-full border border-gray-200 bg-gray-100 px-8 py-3 text-base text-gray-400 transition-colors md:w-auto`}
           >
             Confirm and Process Trip Data
           </button>

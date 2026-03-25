@@ -17,7 +17,8 @@ import {
   analyticsAnnualData,
   analyticsExpenditureData,
   analyticsImpactData,
-} from '../../../api/mockData';
+} from '@/api/mockUiData';
+import { cls } from '@/styles/classes';
 
 const CHART_COLORS = ['#1e3a8a', '#4f46e5', '#0284c7', '#818cf8'];
 
@@ -33,19 +34,15 @@ function PlainTooltip({ active, payload, prefix = '' }: { active?: boolean; payl
 }
 
 export function AnalyticsCharts() {
-  const expenditureData = [...analyticsExpenditureData];
-  const impactData = [...analyticsImpactData];
-  const annualData = [...analyticsAnnualData];
-
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-      <div className="flex flex-col rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+      <div className={`flex flex-col p-6 ${cls.card}`}>
         <h2 className="mb-6 text-lg font-bold text-gray-900">Cost by Service Type</h2>
         <div className="min-h-[300px] flex-1">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
-                data={expenditureData}
+                data={[...analyticsExpenditureData]}
                 cx="50%"
                 cy="50%"
                 innerRadius={70}
@@ -56,7 +53,7 @@ export function AnalyticsCharts() {
                 label={({ value }) => `$${value}`}
                 labelLine
               >
-                {expenditureData.map((_, index) => (
+                {analyticsExpenditureData.map((_, index) => (
                   <Cell key={index} fill={CHART_COLORS[index % CHART_COLORS.length]} />
                 ))}
               </Pie>
@@ -67,11 +64,11 @@ export function AnalyticsCharts() {
         </div>
       </div>
 
-      <div className="flex flex-col rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+      <div className={`flex flex-col p-6 ${cls.card}`}>
         <h2 className="mb-6 text-lg font-bold text-gray-900">Service Frequency by Impact</h2>
         <div className="min-h-[300px] flex-1">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={impactData} layout="vertical" margin={{ top: 20, right: 30, left: 40, bottom: 5 }}>
+            <BarChart data={[...analyticsImpactData]} layout="vertical" margin={{ top: 20, right: 30, left: 40, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#e5e7eb" />
               <XAxis type="number" stroke="#6b7280" fontSize={12} tickLine={false} axisLine={false} />
               <YAxis dataKey="name" type="category" stroke="#4b5563" fontSize={13} tickLine={false} axisLine={false} />
@@ -82,11 +79,11 @@ export function AnalyticsCharts() {
         </div>
       </div>
 
-      <div className="lg:col-span-2 flex flex-col rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+      <div className={`lg:col-span-2 flex flex-col p-6 ${cls.card}`}>
         <h2 className="mb-6 text-lg font-bold text-gray-900">Annual Maintenance Expenditure</h2>
         <div className="h-[350px] w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={annualData} margin={{ top: 20, right: 30, left: 10, bottom: 10 }}>
+            <LineChart data={[...analyticsAnnualData]} margin={{ top: 20, right: 30, left: 10, bottom: 10 }}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
               <XAxis dataKey="month" stroke="#6b7280" fontSize={12} tickLine={false} axisLine={false} dy={10} />
               <YAxis stroke="#6b7280" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `$${value}`} />

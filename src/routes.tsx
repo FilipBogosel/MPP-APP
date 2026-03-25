@@ -1,27 +1,27 @@
 import { createBrowserRouter, Navigate } from 'react-router';
-import { AddService } from './pages/AddService';
-import { Analytics } from './pages/Analytics';
-import { DataImport } from './pages/DataImport';
-import { LifecycleForecaster } from './pages/LifecycleForecaster';
-import { Login } from './pages/Login';
-import { Maintenance } from './pages/Maintenance';
-import { Register } from './pages/Register';
-import { Root } from './pages/Root';
-import { ServiceDetail } from './pages/ServiceDetail';
+import { AddServicePage } from './components/pages/add-service/AddServicePage';
+import { AnalyticsPage } from './components/pages/analytics/AnalyticsPage';
+import { DataImportPage } from './components/pages/import/DataImportPage';
+import { LifecyclePage } from './components/pages/lifecycle/LifecyclePage';
+import { LoginPage } from './components/pages/auth/LoginPage';
+import { MaintenancePage } from './components/pages/maintenance/MaintenancePage';
+import { RegisterPage } from './components/pages/auth/RegisterPage';
+import { Root } from './components/pages/Root';
+import { ServiceDetailPage } from './components/pages/service-detail/ServiceDetailPage';
 
 export const router = createBrowserRouter([
   {
     path: '/',
     Component: Root,
     children: [
-      { index: true, Component: Maintenance },
-      { path: 'analytics', Component: Analytics },
-      { path: 'lifecycle-forecaster', Component: LifecycleForecaster },
-      { path: 'import', Component: DataImport },
-      { path: 'register', Component: Register },
-      { path: 'login', Component: Login },
-      { path: 'add-service', Component: AddService },
-      { path: 'service/:id', Component: ServiceDetail },
+      { index: true, Component: MaintenancePage },
+      { path: 'analytics', Component: AnalyticsPage },
+      { path: 'lifecycle-forecaster', Component: LifecyclePage },
+      { path: 'import', Component: DataImportPage },
+      { path: 'register', Component: RegisterPage },
+      { path: 'login', Component: LoginPage },
+      { path: 'add-service', Component: AddServicePage },
+      { path: 'service/:id', Component: ServiceDetailPage },
       { path: '*', element: <Navigate to="/" replace /> },
     ],
   },

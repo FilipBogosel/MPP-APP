@@ -1,5 +1,6 @@
 import { ArrowRight, ChevronDown, FileText, XCircle } from 'lucide-react';
-import { importMappingRows } from '../../../api/mockData';
+import { importMappingRows } from '@/api/mockUiData';
+import { cls } from '@/styles/classes';
 
 export function ImportMappingTable() {
   return (
@@ -13,13 +14,13 @@ export function ImportMappingTable() {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="w-2/5 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+              <th className={`w-2/5 ${cls.th} py-3 font-medium`}>
                 DATA POINT FOUND IN YOUR FILE
               </th>
-              <th className="w-1/5 px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500">
+              <th className={`w-1/5 ${cls.th} py-3 text-center font-medium`}>
                 STATUS
               </th>
-              <th className="w-2/5 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+              <th className={`w-2/5 ${cls.th} py-3 font-medium`}>
                 MATCHED APP DATA CATEGORY
               </th>
             </tr>
@@ -29,17 +30,17 @@ export function ImportMappingTable() {
               const isMissing = row.status === 'missing';
               return (
                 <tr key={row.id} className={isMissing ? 'bg-red-50/30' : ''}>
-                  <td className={`whitespace-nowrap px-6 py-4 text-sm font-medium ${isMissing ? 'text-red-900' : 'text-gray-900'}`}>
+                  <td className={`${cls.td} text-sm font-medium ${isMissing ? 'text-red-900' : 'text-gray-900'}`}>
                     {row.source}
                   </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-center text-sm text-gray-500">
+                  <td className={`${cls.td} text-center text-sm text-gray-500`}>
                     {isMissing ? (
                       <XCircle className="mx-auto h-5 w-5 text-red-500" />
                     ) : (
                       <ArrowRight className="mx-auto h-5 w-5 text-emerald-500" />
                     )}
                   </td>
-                  <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600">
+                  <td className={`${cls.td} text-sm text-gray-600`}>
                     {row.mappedLabel ? (
                       <span className="rounded-full border border-gray-200 bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700">
                         {row.mappedLabel}

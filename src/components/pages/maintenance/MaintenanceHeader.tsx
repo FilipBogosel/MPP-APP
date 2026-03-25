@@ -1,5 +1,6 @@
 import { LayoutGrid, List, Plus } from 'lucide-react';
 import { Link } from 'react-router';
+import { cls } from '@/styles/classes';
 
 type Props = {
   viewMode: 'table' | 'card';
@@ -10,8 +11,8 @@ export function MaintenanceHeader({ viewMode, onModeChange }: Props) {
   return (
     <div className="mb-8 sm:flex sm:items-center sm:justify-between">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Maintenance Records</h1>
-        <p className="mt-2 text-sm text-gray-600">
+        <h1 className={cls.pageTitle}>Maintenance Records</h1>
+        <p className={cls.pageSubtitle}>
           A detailed history of services performed on your vehicle.
         </p>
       </div>
@@ -40,7 +41,7 @@ export function MaintenanceHeader({ viewMode, onModeChange }: Props) {
 
         <Link
           to="/add-service"
-          className="inline-flex items-center justify-center rounded-lg border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+          className={cls.btnPrimary}
         >
           <Plus className="mr-2 h-4 w-4" />
           Add Service

@@ -1,8 +1,9 @@
 import { UploadCloud } from 'lucide-react';
+import { cls } from '@/styles/classes';
 
 export function ImportUploadPanel() {
   return (
-    <div className="flex flex-col items-center justify-center rounded-xl border border-gray-100 bg-white p-8 text-center shadow-sm">
+    <div className={`${cls.cardSubtle} flex flex-col items-center justify-center p-8 text-center`}>
       <div className="flex w-full max-w-lg cursor-pointer flex-col items-center rounded-lg border-2 border-dashed border-gray-300 p-12 transition-colors hover:bg-gray-50">
         <UploadCloud className="mb-4 h-12 w-12 text-indigo-500" />
         <h3 className="mb-1 text-base font-medium text-gray-900">

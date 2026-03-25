@@ -1,6 +1,8 @@
 import { Link } from 'react-router';
-import type { ChangeEvent, ComponentType, FormEvent } from 'react';
-import type { AddServiceFormData, SelectOption } from '../../../types';
+import type { ChangeEvent, FormEvent } from 'react';
+import type { AddServiceFormData, SelectOption } from '@/types';
+import { FormField } from '@/components/FormField';
+import { cls } from '@/styles/classes';
 import {
   Building2,
   Calendar,
@@ -22,13 +24,13 @@ type Props = {
 
 export function AddServiceForm({ formData, onChange, onSubmit, carOptions }: Props) {
   return (
-    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+    <div className={`overflow-hidden ${cls.card}`}>
       <form onSubmit={onSubmit} className="space-y-8 p-6 sm:p-8">
         <div>
           <h3 className="mb-4 border-b pb-2 text-lg font-medium leading-6 text-gray-900">Basic Details</h3>
           <div className="grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-6">
             <div className="sm:col-span-2">
-              <label htmlFor="carId" className="block text-sm font-medium text-gray-700">Vehicle</label>
+              <label htmlFor="carId" className={cls.label}>Vehicle</label>
               <div className="relative mt-1 rounded-md shadow-sm">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                   <Car className="h-5 w-5 text-gray-400" />
@@ -38,7 +40,7 @@ export function AddServiceForm({ formData, onChange, onSubmit, carOptions }: Pro
                   name="carId"
                   value={formData.carId}
                   onChange={onChange}
-                  className="block w-full rounded-lg border border-gray-300 bg-white py-2.5 pl-10 text-sm text-gray-700 outline-none transition-colors focus:border-indigo-500 focus:ring-indigo-500"
+                  className={cls.input}
                 >
                   {carOptions.map((car) => (
                     <option key={car.id} value={car.id}>{car.name}</option>
@@ -47,19 +49,19 @@ export function AddServiceForm({ formData, onChange, onSubmit, carOptions }: Pro
               </div>
             </div>
 
-            <LabeledInput id="serviceName" label="Service Name" icon={Wrench} value={formData.serviceName} onChange={onChange} placeholder="e.g. Oil Change, Brake Pad Replacement" required />
-            <LabeledInput id="date" label="Date" icon={Calendar} value={formData.date} onChange={onChange} type="date" required />
-            <LabeledInput id="kilometers" label="Current Odometer (km)" icon={Gauge} value={formData.kilometers} onChange={onChange} type="number" placeholder="e.g. 50000" required />
-            <LabeledInput id="nextKilometers" label="Next Recommended Service (km)" icon={Gauge} value={formData.nextKilometers} onChange={onChange} type="number" placeholder="e.g. 60000" />
+            <FormField id="serviceName" label="Service Name" icon={Wrench} value={formData.serviceName} onChange={onChange} placeholder="e.g. Oil Change, Brake Pad Replacement" required />
+            <FormField id="date" label="Date" icon={Calendar} value={formData.date} onChange={onChange} type="date" required />
+            <FormField id="kilometers" label="Current Odometer (km)" icon={Gauge} value={formData.kilometers} onChange={onChange} type="number" placeholder="e.g. 50000" required />
+            <FormField id="nextKilometers" label="Next Recommended Service (km)" icon={Gauge} value={formData.nextKilometers} onChange={onChange} type="number" placeholder="e.g. 60000" />
           </div>
         </div>
 
         <div>
           <h3 className="mb-4 border-b pb-2 text-lg font-medium leading-6 text-gray-900">Shop & Cost</h3>
           <div className="grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-6">
-            <LabeledInput id="shopName" label="Service Shop Name" icon={Building2} value={formData.shopName} onChange={onChange} placeholder="e.g. Joe's Auto Repair" />
-            <LabeledInput id="location" label="Location" icon={MapPin} value={formData.location} onChange={onChange} placeholder="e.g. 123 Main St, City" />
-            <LabeledInput id="cost" label="Total Cost" icon={DollarSign} value={formData.cost} onChange={onChange} type="number" placeholder="0.00" />
+            <FormField id="shopName" label="Service Shop Name" icon={Building2} value={formData.shopName} onChange={onChange} placeholder="e.g. Joe's Auto Repair" />
+            <FormField id="location" label="Location" icon={MapPin} value={formData.location} onChange={onChange} placeholder="e.g. 123 Main St, City" />
+            <FormField id="cost" label="Total Cost" icon={DollarSign} value={formData.cost} onChange={onChange} type="number" placeholder="0.00" />
           </div>
         </div>
 
@@ -79,7 +81,7 @@ export function AddServiceForm({ formData, onChange, onSubmit, carOptions }: Pro
                   placeholder="Any specific observations or future recommendations from the mechanic..."
                   value={formData.notes}
                   onChange={onChange}
-                  className="block w-full resize-y rounded-lg border border-gray-300 py-2.5 pl-10 text-sm outline-none transition-colors focus:border-indigo-500 focus:ring-indigo-500"
+                  className={cls.textarea}
                 />
               </div>
             </div>
@@ -111,55 +113,12 @@ export function AddServiceForm({ formData, onChange, onSubmit, carOptions }: Pro
             <Link to="/" className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50">
               Cancel
             </Link>
-            <button type="submit" className="inline-flex justify-center rounded-lg border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-indigo-700">
+            <button type="submit" className={cls.btnPrimary}>
               Save Record
             </button>
           </div>
         </div>
       </form>
-    </div>
-  );
-}
-
-function LabeledInput({
-  id,
-  label,
-  icon: Icon,
-  value,
-  onChange,
-  type = 'text',
-  placeholder,
-  required,
-}: {
-  id: string;
-  label: string;
-  icon: ComponentType<{ className?: string }>;
-  value: string;
-  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
-  type?: string;
-  placeholder?: string;
-  required?: boolean;
-}) {
-  return (
-    <div>
-      <label htmlFor={id} className="block text-sm font-medium text-gray-700">{label}</label>
-      <div className="relative mt-1 rounded-md shadow-sm">
-        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-          <Icon className="h-5 w-5 text-gray-400" />
-        </div>
-        <input
-          type={type}
-          name={id}
-          id={id}
-          required={required}
-          min={type === 'number' ? '0' : undefined}
-          step={id === 'cost' ? '0.01' : undefined}
-          placeholder={placeholder}
-          value={value}
-          onChange={onChange}
-          className="block w-full rounded-lg border border-gray-300 py-2.5 pl-10 text-sm outline-none transition-colors focus:border-indigo-500 focus:ring-indigo-500"
-        />
-      </div>
     </div>
   );
 }

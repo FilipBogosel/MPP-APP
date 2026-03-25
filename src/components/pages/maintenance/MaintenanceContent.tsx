@@ -1,7 +1,9 @@
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { Wrench } from 'lucide-react';
-import type { MaintenanceListItem } from '../../../types';
-import { DateLabel, MileageLabel, ServiceIcon, ServiceImpactBadge } from './maintenanceUtils';
+import type { MaintenanceListItem } from '@/types';
+import { cls } from '@/styles/classes';
+import { DateLabel, MileageLabel, ServiceIcon, ServiceImpactBadge } from './MaintenanceBadges';
+import { formatServiceDate } from './maintenanceUtils';
 
 type Props = {
   data: ReadonlyArray<MaintenanceListItem>;
@@ -9,6 +11,8 @@ type Props = {
 };
 
 export function MaintenanceContent({ data, viewMode }: Props) {
+  const navigate = useNavigate();
+
   if (viewMode === 'card') {
     return (
       <div className="mb-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -16,7 +20,7 @@ export function MaintenanceContent({ data, viewMode }: Props) {
           <Link
             to={`/service/${service.id}`}
             key={service.id}
-            className="flex h-full flex-col rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
+            className={`${cls.cardPadded} flex h-full flex-col transition-shadow hover:shadow-md`}
           >
             <div className="mb-4 flex items-start justify-between">
               <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600">
@@ -30,7 +34,7 @@ export function MaintenanceContent({ data, viewMode }: Props) {
             <div className="mt-auto flex-grow space-y-3 border-t border-gray-100 pt-4">
               <div className="flex items-center justify-between text-sm">
                 <span className="text-gray-500">Date</span>
-                <span className="font-medium text-gray-900">{new Date(service.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+                <span className="font-medium text-gray-900">{formatServiceDate(service.date)}</span>
               </div>
 
               <div className="flex items-center justify-between text-sm">
@@ -50,41 +54,53 @@ export function MaintenanceContent({ data, viewMode }: Props) {
   }
 
   return (
-    <div className="mb-6 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+    <div className={`mb-6 overflow-hidden ${cls.card}`}>
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Service</th>
-              <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Date</th>
-              <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Mileage</th>
-              <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Next Recommended</th>
-              <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">Impact</th>
+              <th className={cls.th}>Service</th>
+              <th className={cls.th}>Date</th>
+              <th className={cls.th}>Mileage</th>
+              <th className={cls.th}>Next Recommended</th>
+              <th className={cls.th}>Impact</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 bg-white">
             {data.map((service) => (
-              <tr key={service.id} className="cursor-pointer transition-colors hover:bg-gray-50">
-                <td className="whitespace-nowrap px-6 py-4">
-                  <Link to={`/service/${service.id}`} className="flex items-center">
+              <tr
+                key={service.id}
+                className="cursor-pointer transition-colors hover:bg-gray-50"
+                onClick={() => navigate(`/service/${service.id}`)}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    navigate(`/service/${service.id}`);
+                  }
+                }}
+                tabIndex={0}
+                role="link"
+              >
+                <td className={cls.td}>
+                  <div className="flex items-center">
                     <ServiceIcon />
                     <div className="ml-4">
                       <div className="text-sm font-medium text-gray-900">{service.name}</div>
                     </div>
-                  </Link>
+                  </div>
                 </td>
-                <td className="whitespace-nowrap px-6 py-4">
+                <td className={cls.td}>
                   <DateLabel date={service.date} />
                 </td>
-                <td className="whitespace-nowrap px-6 py-4">
+                <td className={cls.td}>
                   <MileageLabel mileage={service.mileage} />
                 </td>
-                <td className="whitespace-nowrap px-6 py-4">
+                <td className={cls.td}>
                   <div className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-800">
                     {service.nextMileage} km
                   </div>
                 </td>
-                <td className="whitespace-nowrap px-6 py-4">
+                <td className={cls.td}>
                   <ServiceImpactBadge cost={service.cost} />
                 </td>
               </tr>

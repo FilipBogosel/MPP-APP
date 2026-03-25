@@ -1,4 +1,5 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { cls } from '@/styles/classes';
 
 type Props = {
   currentPage: number;
@@ -8,7 +9,7 @@ type Props = {
   onPageChange: (page: number) => void;
 };
 
-export function MaintenancePagination({
+export function Pagination({
   currentPage,
   totalPages,
   totalItems,
@@ -16,7 +17,7 @@ export function MaintenancePagination({
   onPageChange,
 }: Props) {
   return (
-    <div className="flex items-center justify-between rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-sm sm:px-6">
+    <div className={`flex items-center justify-between px-4 py-3 sm:px-6 ${cls.card}`}>
       <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
         <p className="text-sm text-gray-700">
           Showing <span className="font-medium">{(currentPage - 1) * itemsPerPage + 1}</span> to{' '}

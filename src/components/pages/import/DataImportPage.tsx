@@ -1,4 +1,5 @@
 import { Database, HelpCircle } from 'lucide-react';
+import { cls } from '@/styles/classes';
 import { ImportMappingTable } from './ImportMappingTable';
 import { ImportReviewPanel } from './ImportReviewPanel';
 import { ImportUploadPanel } from './ImportUploadPanel';
@@ -8,11 +9,11 @@ export function DataImportPage() {
     <div className="relative min-h-screen flex-1 overflow-y-auto bg-[#F4F6F8] p-6 lg:p-8">
       <div className="mx-auto max-w-7xl pb-16">
         <div className="mb-8">
-          <h1 className="flex items-center gap-3 text-2xl font-bold text-gray-900">
+          <h1 className={`flex items-center gap-3 ${cls.pageTitle}`}>
             <Database className="h-6 w-6 text-indigo-600" />
             Import Diagnostic Data
           </h1>
-          <p className="mt-2 text-sm text-gray-600">
+          <p className={cls.pageSubtitle}>
             Upload trip logs from apps like Torque Pro or CarScanner to update your personal service timeline and
             budget forecasts.
           </p>

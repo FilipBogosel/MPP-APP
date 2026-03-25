@@ -1,19 +1,6 @@
 import { Calendar, Gauge, Wrench } from 'lucide-react';
-import type { MaintenanceListItem } from '../../../types';
-
-export const ITEMS_PER_PAGE = 6;
-
-export function formatServiceDate(value: string) {
-  return new Date(value).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
-}
-
-export function getCurrentPageData(data: ReadonlyArray<MaintenanceListItem>, page: number) {
-  return data.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
-}
+import { cls } from '@/styles/classes';
+import { formatServiceDate } from './maintenanceUtils';
 
 export function ServiceImpactBadge({ cost }: { cost: number }) {
   if (cost >= 1000) {
@@ -41,7 +28,7 @@ export function ServiceImpactBadge({ cost }: { cost: number }) {
 
 export function ServiceIcon() {
   return (
-    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600">
+    <div className={`${cls.iconBox} h-10 w-10`}>
       <Wrench className="h-5 w-5" />
     </div>
   );

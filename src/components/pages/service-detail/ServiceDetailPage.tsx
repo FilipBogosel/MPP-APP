@@ -2,8 +2,10 @@ import { ArrowLeft, Save, Trash2 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import type { ChangeEvent } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
-import type { ServiceRecordFormData } from '../../../types';
-import { carSelectOptions, serviceDetailSeed } from '../../../api/mockData';
+import type { ServiceRecordFormData } from '@/types';
+import { carSelectOptions } from '@/api/mockData';
+import { serviceDetailSeed } from '@/api/mockUiData';
+import { cls } from '@/styles/classes';
 import { ServiceDetailPanels } from './ServiceDetailPanels';
 
 export function ServiceDetailPage() {
@@ -33,21 +35,21 @@ export function ServiceDetailPage() {
   };
 
   return (
-    <div className="app-page py-10">
+    <div className={`${cls.page} py-10`}>
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
         <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <Link to="/" className="mb-4 inline-flex items-center text-sm font-medium text-indigo-600 transition-colors hover:text-indigo-700">
+            <Link to="/" className={cls.backLink}>
               <ArrowLeft className="mr-1 h-4 w-4" />
               Back to Maintenance
             </Link>
-            <h1 className="text-2xl font-bold text-gray-900">Service Record Details</h1>
-            <p className="mt-2 text-sm text-gray-600">View and edit details. Click the pencil icon to make changes.</p>
+            <h1 className={cls.pageTitle}>Service Record Details</h1>
+            <p className={cls.pageSubtitle}>View and edit details. Click the pencil icon to make changes.</p>
           </div>
           <div className="mt-4 flex gap-3 sm:mt-0">
             <button
               onClick={handleDelete}
-              className="inline-flex items-center justify-center rounded-lg border border-transparent bg-red-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+              className={cls.btnDanger}
             >
               <Trash2 className="mr-2 h-4 w-4" />
               Delete Record
@@ -55,11 +57,7 @@ export function ServiceDetailPage() {
             <button
               onClick={handleUpdate}
               disabled={!hasChanges}
-              className={`inline-flex items-center justify-center rounded-lg border border-transparent px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-                hasChanges
-                  ? 'bg-emerald-600 hover:bg-emerald-700 focus:ring-emerald-500'
-                  : 'cursor-not-allowed bg-gray-300'
-              }`}
+              className={hasChanges ? cls.btnSuccess : cls.btnDisabled}
             >
               <Save className="mr-2 h-4 w-4" />
               {hasChanges ? 'Update Changes' : 'Up to date'}

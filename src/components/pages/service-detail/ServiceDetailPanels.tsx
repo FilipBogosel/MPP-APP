@@ -10,7 +10,8 @@ import {
   Wrench,
 } from 'lucide-react';
 import type { ChangeEvent } from 'react';
-import type { SelectOption, ServiceRecordFormData } from '../../../types';
+import { cls } from '@/styles/classes';
+import type { SelectOption, ServiceRecordFormData } from '@/types';
 import { EditableField } from './EditableField';
 
 type Props = {
@@ -50,7 +51,7 @@ export function ServiceDetailPanels({ formData, carOptions, onChange }: Props) {
 
         <div className="space-y-8">
           <section>
-            <h4 className="mb-4 text-sm font-semibold uppercase tracking-wider text-indigo-600">Provider & Location</h4>
+            <h4 className={cls.sectionTitle}>Provider & Location</h4>
             <div className="space-y-5 rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <EditableField label="Shop Name" icon={Building2} name="shopName" value={formData.shopName} onChange={onChange} />
@@ -60,7 +61,7 @@ export function ServiceDetailPanels({ formData, carOptions, onChange }: Props) {
           </section>
 
           <section>
-            <h4 className="mb-4 text-sm font-semibold uppercase tracking-wider text-indigo-600">Future Planning</h4>
+            <h4 className={cls.sectionTitle}>Future Planning</h4>
             <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
               <EditableField
                 label="Next Recommended Service (km)"
@@ -74,7 +75,7 @@ export function ServiceDetailPanels({ formData, carOptions, onChange }: Props) {
           </section>
 
           <section>
-            <h4 className="mb-4 text-sm font-semibold uppercase tracking-wider text-indigo-600">Materials, Notes & Documents</h4>
+            <h4 className={cls.sectionTitle}>Materials, Notes & Documents</h4>
             <div className="space-y-6 rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
               <EditableField
                 label="Mechanic Notes / Description"

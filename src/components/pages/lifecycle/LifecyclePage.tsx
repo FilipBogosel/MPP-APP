@@ -1,4 +1,5 @@
 import { AlertTriangle, TrendingUp } from 'lucide-react';
+import { cls } from '@/styles/classes';
 import { LifecycleMetrics } from './LifecycleMetrics';
 import { LifecycleTimeline } from './LifecycleTimeline';
 
@@ -7,11 +8,11 @@ export function LifecyclePage() {
     <div className="flex-1 overflow-y-auto bg-[#F4F6F8] p-6 lg:p-8">
       <div className="mx-auto max-w-7xl">
         <div className="mb-8">
-          <h1 className="flex items-center gap-3 text-2xl font-bold text-gray-900">
+          <h1 className={`flex items-center gap-3 ${cls.pageTitle}`}>
             <TrendingUp className="h-6 w-6 text-indigo-600" />
             Lifecycle Forecaster
           </h1>
-          <p className="mt-2 text-sm text-gray-600">
+          <p className={cls.pageSubtitle}>
             Predictive maintenance modeling and budget forecasting based on your vehicle's telematics and service history.
           </p>
         </div>

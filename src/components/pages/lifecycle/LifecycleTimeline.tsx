@@ -1,5 +1,5 @@
 import { Calendar, Clock } from 'lucide-react';
-import { lifecycleTimeline } from '../../../api/mockData';
+import { lifecycleTimeline } from '@/api/mockUiData';
 
 function nodeTone(level: 'Routine' | 'Warning' | 'Critical') {
   if (level === 'Critical') {

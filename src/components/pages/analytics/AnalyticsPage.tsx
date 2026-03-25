@@ -1,14 +1,15 @@
 import { AnalyticsCharts } from './AnalyticsCharts';
 import { AnalyticsSummary } from './AnalyticsSummary';
+import { cls } from '@/styles/classes';
 
 export function AnalyticsPage() {
   return (
-    <div className="app-page pb-12">
-      <div className="app-page-shell">
+    <div className={`${cls.page} pb-12`}>
+      <div className={cls.pageShell}>
         <div className="mb-8 sm:flex sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Analytics & Statistics</h1>
-            <p className="mt-2 text-sm text-gray-600">
+            <h1 className={cls.pageTitle}>Analytics & Statistics</h1>
+            <p className={cls.pageSubtitle}>
               Insights and financial breakdown of your vehicle's maintenance history.
             </p>
           </div>

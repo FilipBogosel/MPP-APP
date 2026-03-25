@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router';
 import { BarChart3, Database, Menu, TrendingUp, User, Wrench } from 'lucide-react';
+import { cls } from '@/styles/classes';
 
 const navItems = [
   { to: '/', label: 'Maintenance Records', icon: Wrench },
@@ -22,7 +23,7 @@ export function Navbar() {
         <div className="flex justify-between h-16">
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
-              <span className="ml-2 text-xl font-bold text-[#0056d2] tracking-tight">
+              <span className="ml-2 text-xl font-bold text-indigo-700 tracking-tight">
                 <span className="flex items-center">
                   Ma<Wrench className="h-5 w-5 inline mx-[1px]" />ntenanceRecord
                 </span>
@@ -33,11 +34,7 @@ export function Navbar() {
                 <Link
                   key={to}
                   to={to}
-                  className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors ${
-                    isActive(to)
-                      ? 'border-indigo-500 text-gray-900'
-                      : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
-                  }`}
+                  className={isActive(to) ? cls.navLinkActive : cls.navLinkInactive}
                 >
                   <Icon className="w-4 h-4 mr-2" />
                   {label}
@@ -66,11 +63,7 @@ export function Navbar() {
               key={to}
               to={to}
               onClick={() => setMobileOpen(false)}
-              className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium ${
-                isActive(to)
-                  ? 'bg-indigo-50 border-indigo-500 text-indigo-700'
-                  : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700'
-              }`}
+              className={isActive(to) ? cls.mobileNavLinkActive : cls.mobileNavLinkInactive}
             >
               <div className="flex items-center">
                 <Icon className="w-5 h-5 mr-3" />

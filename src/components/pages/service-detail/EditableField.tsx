@@ -1,7 +1,8 @@
 import { Pencil } from 'lucide-react';
 import { useState } from 'react';
 import type { ChangeEvent, ComponentType } from 'react';
-import type { SelectOption } from '../../../types';
+import { cls } from '@/styles/classes';
+import type { SelectOption } from '@/types';
 
 type Props = {
   label: string;
@@ -29,16 +30,12 @@ export function EditableField({
   const [isEditing, setIsEditing] = useState(false);
 
   const inputClasses = isEditing
-    ? `block w-full rounded-lg border-2 py-2.5 pl-10 pr-10 text-sm outline-none transition-colors ${
-        dark ? 'border-indigo-400 bg-slate-700 text-white' : 'border-indigo-500 bg-white text-gray-900'
-      }`
-    : `block w-full rounded-lg border py-2.5 pl-10 pr-10 text-sm outline-none transition-colors ${
-        dark ? 'border-slate-600 bg-slate-800/50 text-white' : 'border-gray-200 bg-gray-50 text-gray-900'
-      }`;
+    ? (dark ? cls.inputEditingDark : cls.inputEditingLight)
+    : (dark ? cls.inputDark : cls.inputLightReadOnly);
 
   const labelClasses = dark
-    ? 'mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-400'
-    : 'mb-1.5 block text-xs font-semibold uppercase tracking-wider text-gray-500';
+    ? cls.labelSmallCapsDark
+    : cls.labelSmallCaps;
 
   const iconClasses = dark ? 'text-slate-400' : 'text-gray-400';
 

@@ -1,17 +1,11 @@
 import type {
-  AnalyticsAnnualItem,
-  AnalyticsBreakdownItem,
-  AnalyticsImpactItem,
   Car,
-  ImportMappingRow,
-  LifecycleMetric,
-  LifecycleTimelineItem,
   MaintenanceListItem,
   MaintenanceRecord,
   SelectOption,
-  ServiceRecordFormData,
   User,
 } from '../types';
+import { formatServiceType } from '@/components/pages/maintenance/maintenanceUtils';
 
 export const mockUsers: ReadonlyArray<User> = [
   {
@@ -166,99 +160,17 @@ export const mockMaintenanceRecords: ReadonlyArray<MaintenanceRecord> = [
   }
 ];
 
-export const maintenanceListData: ReadonlyArray<MaintenanceListItem> = [
-  { id: '1', name: 'Oil Change', date: '2025-10-15', mileage: '72,000', nextMileage: '80,000', cost: 65 },
-  { id: '2', name: 'Brake Inspection', date: '2025-08-22', mileage: '68,000', nextMileage: '84,000', cost: 45 },
-  { id: '3', name: 'Tire Rotation', date: '2025-08-22', mileage: '68,000', nextMileage: '76,000', cost: 30 },
-  { id: '4', name: 'Air Filter Replacement', date: '2025-05-10', mileage: '61,000', nextMileage: '85,000', cost: 25 },
-  { id: '5', name: 'Spark Plug Replacement', date: '2024-11-05', mileage: '48,000', nextMileage: '96,000', cost: 120 },
-  { id: '6', name: 'Coolant Flush', date: '2024-09-12', mileage: '45,000', nextMileage: '93,000', cost: 150 },
-  { id: '7', name: 'Transmission Fluid Change', date: '2024-06-20', mileage: '40,000', nextMileage: '88,000', cost: 250 },
-  { id: '8', name: 'Wiper Blade Replacement', date: '2024-04-15', mileage: '35,000', nextMileage: '51,000', cost: 40 },
-  { id: '9', name: 'Battery Replacement', date: '2023-12-01', mileage: '29,000', nextMileage: '109,000', cost: 200 },
-  { id: '10', name: 'Oil Change', date: '2023-10-10', mileage: '24,000', nextMileage: '32,000', cost: 60 },
-  { id: '11', name: 'Tire Rotation', date: '2023-10-10', mileage: '24,000', nextMileage: '32,000', cost: 30 },
-  { id: '12', name: 'Brake Pad Replacement', date: '2023-05-22', mileage: '16,000', nextMileage: '64,000', cost: 450 },
-  { id: '13', name: 'Engine Overhaul', date: '2023-01-14', mileage: '8,000', nextMileage: '32,000', cost: 1200 },
-  { id: '14', name: 'Initial Inspection', date: '2022-10-01', mileage: '800', nextMileage: '8,000', cost: 150 },
-];
+export const maintenanceListData: ReadonlyArray<MaintenanceListItem> =
+  mockMaintenanceRecords.map((r) => ({
+    id: r.id,
+    name: formatServiceType(r.serviceType),
+    date: r.serviceDate,
+    mileage: r.odometerKm.toLocaleString('en-US'),
+    nextMileage: r.nextServiceKm.toLocaleString('en-US'),
+    cost: r.costUsd,
+  }));
 
-export const analyticsExpenditureData: ReadonlyArray<AnalyticsBreakdownItem> = [
-  { name: 'Oil Changes', value: 450 },
-  { name: 'Brake Inspections', value: 800 },
-  { name: 'Tire Rotations', value: 300 },
-  { name: 'Other Services', value: 600 },
-];
-
-export const analyticsImpactData: ReadonlyArray<AnalyticsImpactItem> = [
-  { name: 'Routine', count: 15 },
-  { name: 'Significant', count: 4 },
-  { name: 'Overhaul', count: 1 },
-];
-
-export const analyticsAnnualData: ReadonlyArray<AnalyticsAnnualItem> = [
-  { month: 'Jan', cost: 100 },
-  { month: 'Feb', cost: 0 },
-  { month: 'Mar', cost: 250 },
-  { month: 'Apr', cost: 45 },
-  { month: 'May', cost: 0 },
-  { month: 'Jun', cost: 600 },
-  { month: 'Jul', cost: 0 },
-  { month: 'Aug', cost: 120 },
-  { month: 'Sep', cost: 0 },
-  { month: 'Oct', cost: 90 },
-  { month: 'Nov', cost: 0 },
-  { month: 'Dec', cost: 1500 },
-];
-
-export const lifecycleMetrics: ReadonlyArray<LifecycleMetric> = [
-  {
-    title: 'Calculated Driving Average',
-    value: '42 km/day',
-    subtitle: 'Based on 90-day Weighted Moving Average.',
-    tone: 'indigo',
-  },
-  {
-    title: 'Projected 12-Month Budget',
-    value: '$1,835.00',
-    subtitle: 'Estimated cost of upcoming lifecycle events.',
-    tone: 'emerald',
-  },
-];
-
-export const lifecycleTimeline: ReadonlyArray<LifecycleTimelineItem> = [
-  { level: 'Routine', title: 'Oil Change', date: 'May 26, 2026', estimate: '$85.00' },
-  { level: 'Warning', title: 'Timing Belt Limit', date: 'Aug 12, 2026', estimate: '$400.00' },
-  { level: 'Critical', title: 'Clutch Assembly', date: 'Oct 05, 2026', estimate: '$1,200.00' },
-  { level: 'Routine', title: 'Brake Pads', date: 'Dec 15, 2026', estimate: '$150.00' },
-  { level: 'Warning', title: 'Spark Plugs', date: 'Apr 10, 2027', estimate: '$350.00' },
-  { level: 'Critical', title: 'Suspension Overhaul', date: 'Jul 01, 2027', estimate: '$850.00' },
-];
-
-export const importMappingRows: ReadonlyArray<ImportMappingRow> = [
-  { id: 'row-1', source: 'Odometer (km/miles)', status: 'mapped', mappedLabel: 'Mileage' },
-  { id: 'row-2', source: 'Diagnostic Trouble Codes (DTCs) Found', status: 'mapped', mappedLabel: 'Vehicle Health: Fault Codes' },
-  { id: 'row-3', source: 'Average Fuel Economy (L/100km)', status: 'mapped', mappedLabel: 'Performance: Fuel Economy' },
-  { id: 'row-4', source: 'Engine Coolant Temperature (Average)', status: 'mapped', mappedLabel: 'Vehicle Health: Cooling' },
-  { id: 'row-5', source: 'System Battery Voltage (Average)', status: 'mapped', mappedLabel: 'Vehicle Health: Electrical' },
-  { id: 'row-6', source: 'Intake Air Temperature', status: 'missing' },
-];
-
-export const serviceDetailSeed: ServiceRecordFormData = {
-  id: '1',
-  carId: 'car-001',
-  serviceName: 'Oil Change',
-  date: '2025-10-15',
-  kilometers: '72000',
-  nextKilometers: '80000',
-  shopName: "Joe's Auto Repair",
-  location: '123 Main St, City',
-  cost: '85.00',
-  notes: 'Everything looks good. Brake pads have about 30% life left.',
-};
-
-export const carSelectOptions: ReadonlyArray<SelectOption> = [
-  { id: 'car-001', name: '2018 Toyota Camry' },
-  { id: 'car-002', name: '2021 Honda CR-V' },
-  { id: 'car-003', name: '2015 Ford F-150' },
-];
+export const carSelectOptions: ReadonlyArray<SelectOption> = mockCars.map((c) => ({
+  id: c.id,
+  name: `${c.year} ${c.make} ${c.model}`,
+}));
