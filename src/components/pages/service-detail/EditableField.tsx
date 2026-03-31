@@ -14,6 +14,7 @@ type Props = {
   options?: ReadonlyArray<SelectOption>;
   multiline?: boolean;
   dark?: boolean;
+  errorMessage?: string;
 };
 
 export function EditableField({
@@ -26,6 +27,7 @@ export function EditableField({
   options,
   multiline = false,
   dark = false,
+  errorMessage,
 }: Props) {
   const [isEditing, setIsEditing] = useState(false);
 
@@ -36,6 +38,12 @@ export function EditableField({
   const labelClasses = dark
     ? cls.labelSmallCapsDark
     : cls.labelSmallCaps;
+
+  const errorClasses = errorMessage
+    ? (dark ? 'border-red-400 focus:border-red-400 focus:ring-red-400' : 'border-red-500 focus:border-red-500 focus:ring-red-500')
+    : '';
+
+  const fieldClasses = `${inputClasses} ${errorClasses}`;
 
   const iconClasses = dark ? 'text-slate-400' : 'text-gray-400';
 
@@ -54,7 +62,7 @@ export function EditableField({
             onChange={onChange}
             disabled={!isEditing}
             onBlur={() => setIsEditing(false)}
-            className={`${inputClasses} appearance-none`}
+            className={`${fieldClasses} appearance-none`}
           >
             {options.map((opt) => (
               <option key={opt.id} value={opt.id} className="bg-white text-gray-900">
@@ -70,7 +78,7 @@ export function EditableField({
             readOnly={!isEditing}
             onBlur={() => setIsEditing(false)}
             rows={4}
-            className={`${inputClasses} resize-y pt-2.5`}
+            className={`${fieldClasses} resize-y pt-2.5`}
           />
         ) : (
           <input
@@ -83,7 +91,7 @@ export function EditableField({
             onKeyDown={(event) => {
               if (event.key === 'Enter') setIsEditing(false);
             }}
-            className={inputClasses}
+            className={fieldClasses}
           />
         )}
 
@@ -100,6 +108,9 @@ export function EditableField({
           </button>
         )}
       </div>
+      {errorMessage ? (
+        <p className={`mt-1 text-xs ${dark ? 'text-red-300' : 'text-red-600'}`}>{errorMessage}</p>
+      ) : null}
     </div>
   );
 }

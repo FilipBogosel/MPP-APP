@@ -4,7 +4,7 @@ import { BarChart3, Database, Menu, TrendingUp, User, Wrench } from 'lucide-reac
 import { cls } from '@/styles/classes';
 
 const navItems = [
-  { to: '/', label: 'Maintenance Records', icon: Wrench },
+  { to: '/dashboard/records', label: 'Maintenance Records', icon: Wrench },
   { to: '/analytics', label: 'Analytics', icon: BarChart3 },
   { to: '/lifecycle-forecaster', label: 'Forecaster', icon: TrendingUp },
   { to: '/import', label: 'Import Data', icon: Database },

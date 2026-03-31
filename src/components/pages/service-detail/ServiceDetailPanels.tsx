@@ -11,16 +11,17 @@ import {
 } from 'lucide-react';
 import type { ChangeEvent } from 'react';
 import { cls } from '@/styles/classes';
-import type { SelectOption, ServiceRecordFormData } from '@/types';
+import type { AddServiceFormData, SelectOption, ServiceRecordFormData } from '@/types';
 import { EditableField } from './EditableField';
 
 type Props = {
   formData: ServiceRecordFormData;
   carOptions: ReadonlyArray<SelectOption>;
   onChange: (event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
+  validationErrors?: Partial<Record<keyof AddServiceFormData, string>>;
 };
 
-export function ServiceDetailPanels({ formData, carOptions, onChange }: Props) {
+export function ServiceDetailPanels({ formData, carOptions, onChange, validationErrors }: Props) {
   return (
     <div className="flex min-h-[600px] flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm sm:flex-row">
       <div className="relative flex w-full flex-col overflow-hidden bg-slate-800 p-6 sm:w-[35%] sm:p-8">
@@ -32,14 +33,14 @@ export function ServiceDetailPanels({ formData, carOptions, onChange }: Props) {
         </h3>
 
         <div className="relative z-10 flex-1 space-y-6">
-          <EditableField label="Select Vehicle" icon={Car} name="carId" value={formData.carId} options={carOptions} dark onChange={onChange} />
-          <EditableField label="Service Type" icon={Wrench} name="serviceName" value={formData.serviceName} dark onChange={onChange} />
-          <EditableField label="Current Odometer" icon={Gauge} name="kilometers" type="number" value={formData.kilometers} dark onChange={onChange} />
-          <EditableField label="Date" icon={Calendar} name="date" type="date" value={formData.date} dark onChange={onChange} />
+          <EditableField label="Select Vehicle" icon={Car} name="carId" value={formData.carId} options={carOptions} dark onChange={onChange} errorMessage={validationErrors?.carId} />
+          <EditableField label="Service Type" icon={Wrench} name="serviceName" value={formData.serviceName} dark onChange={onChange} errorMessage={validationErrors?.serviceName} />
+          <EditableField label="Current Odometer" icon={Gauge} name="kilometers" type="number" value={formData.kilometers} dark onChange={onChange} errorMessage={validationErrors?.kilometers} />
+          <EditableField label="Date" icon={Calendar} name="date" type="date" value={formData.date} dark onChange={onChange} errorMessage={validationErrors?.date} />
         </div>
 
         <div className="relative z-10 mt-8 border-t border-slate-700 pt-6">
-          <EditableField label="Total Cost" icon={DollarSign} name="cost" type="number" value={formData.cost} dark onChange={onChange} />
+          <EditableField label="Total Cost" icon={DollarSign} name="cost" type="number" value={formData.cost} dark onChange={onChange} errorMessage={validationErrors?.cost} />
         </div>
       </div>
 
@@ -54,8 +55,8 @@ export function ServiceDetailPanels({ formData, carOptions, onChange }: Props) {
             <h4 className={cls.sectionTitle}>Provider & Location</h4>
             <div className="space-y-5 rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                <EditableField label="Shop Name" icon={Building2} name="shopName" value={formData.shopName} onChange={onChange} />
-                <EditableField label="Location" icon={MapPin} name="location" value={formData.location} onChange={onChange} />
+                <EditableField label="Shop Name" icon={Building2} name="shopName" value={formData.shopName} onChange={onChange} errorMessage={validationErrors?.shopName} />
+                <EditableField label="Location" icon={MapPin} name="location" value={formData.location} onChange={onChange} errorMessage={validationErrors?.location} />
               </div>
             </div>
           </section>
@@ -70,6 +71,7 @@ export function ServiceDetailPanels({ formData, carOptions, onChange }: Props) {
                 type="number"
                 value={formData.nextKilometers}
                 onChange={onChange}
+                errorMessage={validationErrors?.nextKilometers}
               />
             </div>
           </section>
@@ -84,6 +86,7 @@ export function ServiceDetailPanels({ formData, carOptions, onChange }: Props) {
                 value={formData.notes}
                 multiline
                 onChange={onChange}
+                errorMessage={validationErrors?.notes}
               />
 
               <div className="border-t border-gray-100 pt-4">

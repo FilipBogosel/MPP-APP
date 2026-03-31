@@ -11,7 +11,14 @@ export function formatServiceDate(value: string): string {
 }
 
 export function getCurrentPageData(data: ReadonlyArray<MaintenanceListItem>, page: number) {
-  return data.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
+  if (!Number.isFinite(page) || page < 1) {
+    return [];
+  }
+
+  const normalizedPage = Math.floor(page);
+  const startIndex = (normalizedPage - 1) * ITEMS_PER_PAGE;
+
+  return data.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 }
 
 export function formatServiceType(serviceType: string): string {

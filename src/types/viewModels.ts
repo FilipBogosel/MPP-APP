@@ -49,7 +49,11 @@ export type ServiceRecordFields = {
   notes: string;
 };
 
-export type AddServiceFormData = ServiceRecordFields;
+export type AddServiceFormData = Omit<ServiceRecordFields, 'kilometers' | 'nextKilometers' | 'cost'> & {
+  kilometers: number;
+  nextKilometers: number;
+  cost: number;
+};
 
 export type ServiceRecordFormData = ServiceRecordFields & {
   id: string;

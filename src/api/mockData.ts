@@ -1,11 +1,9 @@
 import type {
   Car,
-  MaintenanceListItem,
   MaintenanceRecord,
   SelectOption,
   User,
 } from '../types';
-import { formatServiceType } from '@/components/pages/maintenance/maintenanceUtils';
 
 export const mockUsers: ReadonlyArray<User> = [
   {
@@ -159,16 +157,6 @@ export const mockMaintenanceRecords: ReadonlyArray<MaintenanceRecord> = [
     createdAt: '2022-10-01', updatedAt: '2022-10-01'
   }
 ];
-
-export const maintenanceListData: ReadonlyArray<MaintenanceListItem> =
-  mockMaintenanceRecords.map((r) => ({
-    id: r.id,
-    name: formatServiceType(r.serviceType),
-    date: r.serviceDate,
-    mileage: r.odometerKm.toLocaleString('en-US'),
-    nextMileage: r.nextServiceKm.toLocaleString('en-US'),
-    cost: r.costUsd,
-  }));
 
 export const carSelectOptions: ReadonlyArray<SelectOption> = mockCars.map((c) => ({
   id: c.id,
