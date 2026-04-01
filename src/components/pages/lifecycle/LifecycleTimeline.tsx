@@ -1,5 +1,5 @@
 import { Calendar, Clock } from 'lucide-react';
-import { lifecycleTimeline } from '@/api/mockUiData';
+import type { LifecycleTimelineItem } from '@/types';
 
 function nodeTone(level: 'Routine' | 'Warning' | 'Critical') {
   if (level === 'Critical') {
@@ -28,7 +28,11 @@ function nodeTone(level: 'Routine' | 'Warning' | 'Critical') {
   };
 }
 
-export function LifecycleTimeline() {
+type Props = {
+  timeline: ReadonlyArray<LifecycleTimelineItem>;
+};
+
+export function LifecycleTimeline({ timeline }: Props) {
   return (
     <div className="relative mb-6 rounded-lg border border-gray-100 bg-white p-6 shadow-sm md:p-8">
       <div className="mb-10 flex items-center gap-2 border-b border-gray-100 pb-4">
@@ -40,7 +44,7 @@ export function LifecycleTimeline() {
         <div className="relative min-w-[900px] pb-12 pt-8">
           <div className="absolute left-12 right-12 top-[42px] z-0 h-1 bg-gray-200" />
           <div className="relative z-10 flex justify-between gap-4 px-4 sm:px-8">
-            {lifecycleTimeline.map((item) => {
+            {timeline.map((item) => {
               const tone = nodeTone(item.level);
               return (
                 <div key={item.title} className="relative w-48 shrink-0 text-center">

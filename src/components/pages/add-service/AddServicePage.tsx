@@ -1,10 +1,12 @@
 import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router';
-import { carSelectOptions } from '@/api/mockData';
+import { useMaintenanceContext } from '@/context/MaintenanceRecordsContext';
 import { cls } from '@/styles/classes';
 import { AddServiceForm } from './AddServiceForm';
 
 export function AddServicePage() {
+  const { carOptions } = useMaintenanceContext();
+
   return (
     <div className={`${cls.page} py-10`}>
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
@@ -17,7 +19,7 @@ export function AddServicePage() {
           <p className={cls.pageSubtitle}>Log a new maintenance or repair service for your vehicle.</p>
         </div>
 
-        <AddServiceForm carOptions={carSelectOptions} />
+        <AddServiceForm carOptions={carOptions} />
       </div>
     </div>
   );

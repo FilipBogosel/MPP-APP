@@ -12,7 +12,6 @@ import {
 import confetti from 'canvas-confetti';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router';
-import { mockCars } from '@/api/mockData';
 import { useMaintenanceContext } from '@/context/MaintenanceRecordsContext';
 import { cls } from '@/styles/classes';
 import type { AddServiceFormData, MaintenanceRecord, MaintenanceServiceType, SelectOption } from '@/types';
@@ -55,7 +54,7 @@ const addServiceSchema = getAddServiceValidationSchema();
 
 export function AddServiceForm({ carOptions }: Props) {
   const navigate = useNavigate();
-  const { addRecord } = useMaintenanceContext();
+  const { addRecord, cars } = useMaintenanceContext();
   const localToday = new Date(new Date().getTime() - (new Date().getTimezoneOffset() * 60000))
     .toISOString()
     .split('T')[0];
@@ -78,12 +77,12 @@ export function AddServiceForm({ carOptions }: Props) {
   });
 
   const onSubmit = (formData: AddServiceFormData) => {
-    const selectedCar = mockCars.find((car) => car.id === formData.carId);
+    const selectedCar = cars.find((car) => car.id === formData.carId);
     const today = localToday;
 
     const serviceRecord: MaintenanceRecord = {
       id: createRecordId(),
-      userId: selectedCar?.userId ?? mockCars[0]?.userId ?? 'user-001',
+      userId: selectedCar?.userId ?? cars[0]?.userId ?? 'user-001',
       carId: formData.carId,
       serviceType: inferServiceType(formData.serviceName),
       serviceDate: formData.date || today,

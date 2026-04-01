@@ -1,11 +1,15 @@
 import { Activity, DollarSign } from 'lucide-react';
-import { lifecycleMetrics } from '@/api/mockUiData';
 import { cls } from '@/styles/classes';
+import type { LifecycleMetric } from '@/types';
 
-export function LifecycleMetrics() {
+type Props = {
+  metrics: ReadonlyArray<LifecycleMetric>;
+};
+
+export function LifecycleMetrics({ metrics }: Props) {
   return (
     <div className="mb-6 grid grid-cols-1 gap-6 md:grid-cols-2">
-      {lifecycleMetrics.map((metric) => (
+      {metrics.map((metric) => (
         <div key={metric.title} className="flex flex-col justify-center rounded-lg border border-gray-100 bg-white p-6 shadow-sm">
           <div className="flex items-center gap-4">
             <div className={`${cls.iconBox} rounded-full p-3 ${metric.tone === 'indigo' ? 'bg-indigo-50' : 'bg-emerald-50'}`}>

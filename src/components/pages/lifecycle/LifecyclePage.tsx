@@ -1,9 +1,12 @@
 import { AlertTriangle, TrendingUp } from 'lucide-react';
+import { useLifecycleData } from '@/hooks/useLifecycleData';
 import { cls } from '@/styles/classes';
 import { LifecycleMetrics } from './LifecycleMetrics';
 import { LifecycleTimeline } from './LifecycleTimeline';
 
 export function LifecyclePage() {
+  const { isLoading, metrics, timeline } = useLifecycleData();
+
   return (
     <div className="flex-1 overflow-y-auto bg-[#F4F6F8] p-6 lg:p-8">
       <div className="mx-auto max-w-7xl">
@@ -17,8 +20,12 @@ export function LifecyclePage() {
           </p>
         </div>
 
-        <LifecycleMetrics />
-        <LifecycleTimeline />
+        <LifecycleMetrics metrics={metrics} />
+        <LifecycleTimeline timeline={timeline} />
+
+        {isLoading ? (
+          <p className="mb-6 text-sm text-gray-500">Loading lifecycle data...</p>
+        ) : null}
 
         <div className="flex items-start gap-4 rounded-lg border border-amber-200 bg-[#FEF3C7] p-5 shadow-sm">
           <AlertTriangle className="mt-0.5 h-6 w-6 flex-shrink-0 text-[#D97706]" />

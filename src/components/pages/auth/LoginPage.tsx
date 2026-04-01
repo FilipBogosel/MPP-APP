@@ -2,18 +2,23 @@ import { Lock, Mail, Wrench } from 'lucide-react';
 import { useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 import { Link } from 'react-router';
+import { login } from '@/api/services/authApi';
 import { FormField } from '@/components/FormField';
 import { cls } from '@/styles/classes';
 
 export function LoginPage() {
   const [formData, setFormData] = useState({ email: '', password: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData((previous) => ({ ...previous, [event.target.name]: event.target.value }));
   };
 
-  const handleSubmit = (event: FormEvent) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
+    setIsSubmitting(true);
+    await login(formData);
+    setIsSubmitting(false);
   };
 
   return (
@@ -34,9 +39,10 @@ export function LoginPage() {
 
             <button
               type="submit"
+              disabled={isSubmitting}
               className={`${cls.btnWide} bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2`}
             >
-              Sign In
+              {isSubmitting ? 'Signing In...' : 'Sign In'}
             </button>
 
             <div className="mt-4 flex flex-col space-y-3">

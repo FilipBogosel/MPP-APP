@@ -1,8 +1,18 @@
 import { ArrowRight, ChevronDown, FileText, XCircle } from 'lucide-react';
-import { importMappingRows } from '@/api/mockUiData';
+import { useImportMappingRows } from '@/hooks/useImportMappingRows';
 import { cls } from '@/styles/classes';
 
 export function ImportMappingTable() {
+  const { isLoading, rows } = useImportMappingRows();
+
+  if (isLoading) {
+    return (
+      <div className="rounded-xl border border-gray-100 bg-white p-6 text-sm text-gray-500 shadow-sm">
+        Loading import mappings...
+      </div>
+    );
+  }
+
   return (
     <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
       <div className="flex items-center gap-2 border-b border-gray-100 px-6 py-4">
@@ -26,7 +36,7 @@ export function ImportMappingTable() {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100 bg-white">
-            {importMappingRows.map((row) => {
+            {rows.map((row) => {
               const isMissing = row.status === 'missing';
               return (
                 <tr key={row.id} className={isMissing ? 'bg-red-50/30' : ''}>

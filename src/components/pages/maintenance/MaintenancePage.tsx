@@ -1,4 +1,3 @@
-import { carSelectOptions } from '@/api/mockData';
 import { Pagination } from '@/components/Pagination';
 import { useMaintenanceContext } from '@/context/MaintenanceRecordsContext';
 import { useMaintenanceTable } from '@/hooks/useMaintenanceTable';
@@ -11,7 +10,7 @@ type Props = {
 };
 
 export function MaintenancePage({ forceTableView = false }: Props) {
-  const { deleteRecord } = useMaintenanceContext();
+  const { carOptions, deleteRecord } = useMaintenanceContext();
   const {
     currentData,
     currentPage,
@@ -56,7 +55,7 @@ export function MaintenancePage({ forceTableView = false }: Props) {
               onChange={(event) => setSelectedCarId(event.target.value)}
             >
               <option value="all">All</option>
-              {carSelectOptions.map((car) => (
+              {carOptions.map((car) => (
                 <option key={car.id} value={car.id}>
                   {car.name}
                 </option>

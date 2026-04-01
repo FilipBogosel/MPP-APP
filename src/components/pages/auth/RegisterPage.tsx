@@ -2,6 +2,7 @@ import { AtSign, Calendar, Car, Lock, Mail, User } from 'lucide-react';
 import { useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 import { Link } from 'react-router';
+import { register } from '@/api/services/authApi';
 import { FormField } from '@/components/FormField';
 import { cls } from '@/styles/classes';
 
@@ -14,13 +15,17 @@ export function RegisterPage() {
     car: '',
     password: '',
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData((previous) => ({ ...previous, [event.target.name]: event.target.value }));
   };
 
-  const handleSubmit = (event: FormEvent) => {
+  const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
+    setIsSubmitting(true);
+    await register(formData);
+    setIsSubmitting(false);
   };
 
   return (
@@ -44,9 +49,10 @@ export function RegisterPage() {
 
             <button
               type="submit"
+              disabled={isSubmitting}
               className={`${cls.btnWide} bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2`}
             >
-              Create Account
+              {isSubmitting ? 'Creating Account...' : 'Create Account'}
             </button>
 
             <div className="mt-6">

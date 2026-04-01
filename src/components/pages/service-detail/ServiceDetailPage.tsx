@@ -4,7 +4,6 @@ import type { ChangeEvent } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 import { validateAddServiceFormData } from '@/components/pages/add-service/addServiceValidation';
 import type { AddServiceFormData, MaintenanceRecord, MaintenanceServiceType, ServiceRecordFormData } from '@/types';
-import { carSelectOptions, mockCars } from '@/api/mockData';
 import { useMaintenanceContext } from '@/context/MaintenanceRecordsContext';
 import { cls } from '@/styles/classes';
 import { formatServiceType } from '../maintenance/maintenanceUtils';
@@ -57,7 +56,7 @@ function mapRecordToFormData(record: MaintenanceRecord): ServiceRecordFormData {
 
 export function ServiceDetailPage() {
   const navigate = useNavigate();
-  const { records, updateRecord, deleteRecord } = useMaintenanceContext();
+  const { cars, carOptions, records, updateRecord, deleteRecord } = useMaintenanceContext();
   const { id } = useParams();
 
   const selectedRecord = useMemo(
@@ -132,9 +131,9 @@ export function ServiceDetailPage() {
 
     setValidationErrors({});
 
-    const selectedCar = mockCars.find((car) => car.id === formData.carId);
+    const selectedCar = cars.find((car) => car.id === formData.carId);
     updateRecord(id, {
-      userId: selectedCar?.userId ?? selectedRecord?.userId ?? 'user-001',
+      userId: selectedCar?.userId ?? selectedRecord?.userId ?? cars[0]?.userId ?? 'user-001',
       carId: formData.carId,
       serviceType: inferServiceType(formData.serviceName),
       serviceDate: formData.date,
@@ -207,7 +206,7 @@ export function ServiceDetailPage() {
 
         <ServiceDetailPanels
           formData={formData}
-          carOptions={carSelectOptions}
+          carOptions={carOptions}
           onChange={handleChange}
           validationErrors={validationErrors}
         />
