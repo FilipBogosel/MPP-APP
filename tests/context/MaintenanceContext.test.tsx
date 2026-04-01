@@ -5,7 +5,7 @@ import type { PropsWithChildren } from 'react';
 import { describe, expect, it } from 'vitest';
 import { mockMaintenanceRecords } from '@/api/mockData';
 import type { MaintenanceRecord } from '@/types';
-import { MaintenanceProvider, useMaintenanceContext } from '@/context/MaintenanceContext';
+import { MaintenanceProvider, useMaintenanceContext } from '@/context/MaintenanceRecordsContext';
 
 function wrapper({ children }: PropsWithChildren) {
   return <MaintenanceProvider>{children}</MaintenanceProvider>;

@@ -2,7 +2,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Building2,
   Calendar,
-  Car,
   DollarSign,
   FileText,
   Gauge,
@@ -10,10 +9,11 @@ import {
   UploadCloud,
   Wrench,
 } from 'lucide-react';
+import confetti from 'canvas-confetti';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router';
 import { mockCars } from '@/api/mockData';
-import { useMaintenanceContext } from '@/context/MaintenanceContext';
+import { useMaintenanceContext } from '@/context/MaintenanceRecordsContext';
 import { cls } from '@/styles/classes';
 import type { AddServiceFormData, MaintenanceRecord, MaintenanceServiceType, SelectOption } from '@/types';
 import { getAddServiceValidationSchema } from './addServiceValidation';
@@ -98,7 +98,17 @@ export function AddServiceForm({ carOptions }: Props) {
     };
 
     addRecord(serviceRecord);
-    navigate('/dashboard/records');
+
+    confetti({
+      particleCount: 100,
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: ['#4F46E5', '#10B981', '#F59E0B'],
+    });
+
+    setTimeout(() => {
+      navigate('/dashboard/records');
+    }, 800);
   };
 
   return (
@@ -110,12 +120,9 @@ export function AddServiceForm({ carOptions }: Props) {
             <div className="sm:col-span-2">
               <label htmlFor="carId" className={cls.label}>Vehicle</label>
               <div className="relative mt-1 rounded-md shadow-sm">
-                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                  <Car className="h-5 w-5 text-gray-400" />
-                </div>
                 <select
                   id="carId"
-                  className={`${cls.input} ${errors.carId ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
+                  className={`block w-full rounded-lg border py-2.5 pl-3 pr-10 text-sm text-gray-700 outline-none transition-colors focus:border-indigo-500 focus:ring-indigo-500 ${errors.carId ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300'}`}
                   {...register('carId')}
                 >
                   {carOptions.map((car) => (

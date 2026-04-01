@@ -1,5 +1,6 @@
 import { createBrowserRouter, Navigate } from 'react-router';
 import { AddServicePage } from './components/pages/add-service/AddServicePage';
+import { DashboardSplitPage } from './components/pages/DashboardSplitPage';
 import { AnalyticsPage } from './components/pages/analytics/AnalyticsPage';
 import { DataImportPage } from './components/pages/import/DataImportPage';
 import { LandingPage } from './components/pages/LandingPage';
@@ -17,6 +18,8 @@ export const router = createBrowserRouter([
     children: [
       { index: true, Component: LandingPage },
       { path: 'dashboard/records', Component: MaintenancePage },
+      { path: 'dashboard/records/new', Component: AddServicePage },
+      { path: 'dashboard/overview', Component: DashboardSplitPage },
       { path: 'analytics', Component: AnalyticsPage },
       { path: 'lifecycle-forecaster', Component: LifecyclePage },
       { path: 'import', Component: DataImportPage },

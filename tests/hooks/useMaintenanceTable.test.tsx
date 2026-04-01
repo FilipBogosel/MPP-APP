@@ -2,9 +2,9 @@
 
 import { act, renderHook } from '@testing-library/react';
 import type { PropsWithChildren } from 'react';
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { mockMaintenanceRecords } from '@/api/mockData';
-import { MaintenanceProvider } from '@/context/MaintenanceContext';
+import { MaintenanceProvider } from '@/context/MaintenanceRecordsContext';
 import { useMaintenanceTable } from '@/hooks/useMaintenanceTable';
 
 function wrapper({ children }: PropsWithChildren) {
@@ -15,7 +15,16 @@ function toTimestamp(date: string) {
   return new Date(date).getTime();
 }
 
+function clearPreferenceCookies() {
+  document.cookie = 'viewMode=; path=/; max-age=0';
+  document.cookie = 'dateOrder=; path=/; max-age=0';
+}
+
 describe('useMaintenanceTable', () => {
+  beforeEach(() => {
+    clearPreferenceCookies();
+  });
+
   it('calculates totalItems and totalPages from initialized data', () => {
     const { result } = renderHook(() => useMaintenanceTable(), { wrapper });
 

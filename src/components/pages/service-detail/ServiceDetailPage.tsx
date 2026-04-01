@@ -5,7 +5,7 @@ import { Link, useNavigate, useParams } from 'react-router';
 import { validateAddServiceFormData } from '@/components/pages/add-service/addServiceValidation';
 import type { AddServiceFormData, MaintenanceRecord, MaintenanceServiceType, ServiceRecordFormData } from '@/types';
 import { carSelectOptions, mockCars } from '@/api/mockData';
-import { useMaintenanceContext } from '@/context/MaintenanceContext';
+import { useMaintenanceContext } from '@/context/MaintenanceRecordsContext';
 import { cls } from '@/styles/classes';
 import { formatServiceType } from '../maintenance/maintenanceUtils';
 import { ServiceDetailPanels } from './ServiceDetailPanels';

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useMaintenanceContext } from '@/context/MaintenanceContext';
+import { useMaintenanceContext } from '@/context/MaintenanceRecordsContext';
 import type { MaintenanceListItem } from '@/types';
 import {
   formatServiceType,
@@ -9,6 +9,42 @@ import {
 
 export type DateOrder = 'desc' | 'asc';
 export type ViewMode = 'table' | 'card';
+
+const COOKIE_MAX_AGE_SECONDS = 31536000;
+
+function getCookieValue(name: string): string | null {
+  if (typeof document === 'undefined') {
+    return null;
+  }
+
+  const cookiePrefix = `${name}=`;
+  const cookies = document.cookie ? document.cookie.split(';') : [];
+
+  for (const cookie of cookies) {
+    const normalizedCookie = cookie.trim();
+    if (normalizedCookie.startsWith(cookiePrefix)) {
+      return decodeURIComponent(normalizedCookie.slice(cookiePrefix.length));
+    }
+  }
+
+  return null;
+}
+
+function setCookieValue(name: string, value: string) {
+  if (typeof document === 'undefined') {
+    return;
+  }
+
+  document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=${COOKIE_MAX_AGE_SECONDS}`;
+}
+
+function getInitialViewMode(): ViewMode {
+  return getCookieValue('viewMode') === 'card' ? 'card' : 'table';
+}
+
+function getInitialDateOrder(): DateOrder {
+  return getCookieValue('dateOrder') === 'asc' ? 'asc' : 'desc';
+}
 
 type UseMaintenanceTableResult = {
   currentData: ReadonlyArray<MaintenanceListItem>;
@@ -28,9 +64,19 @@ type UseMaintenanceTableResult = {
 export function useMaintenanceTable(): UseMaintenanceTableResult {
   const { records } = useMaintenanceContext();
   const [currentPage, setCurrentPage] = useState(1);
-  const [viewMode, setViewMode] = useState<ViewMode>('table');
+  const [viewMode, setViewModeState] = useState<ViewMode>(getInitialViewMode);
   const [selectedCarId, setSelectedCarId] = useState('all');
-  const [dateOrder, setDateOrder] = useState<DateOrder>('desc');
+  const [dateOrder, setDateOrderState] = useState<DateOrder>(getInitialDateOrder);
+
+  const setViewMode = (mode: ViewMode) => {
+    setViewModeState(mode);
+    setCookieValue('viewMode', mode);
+  };
+
+  const setDateOrder = (order: DateOrder) => {
+    setDateOrderState(order);
+    setCookieValue('dateOrder', order);
+  };
 
   const filteredRecords = useMemo(
     () =>

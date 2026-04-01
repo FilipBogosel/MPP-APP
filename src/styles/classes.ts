@@ -10,18 +10,19 @@ export const cls = {
   textarea: 'block w-full resize-y rounded-lg border border-gray-300 py-2.5 pl-10 text-sm outline-none transition-colors focus:border-indigo-500 focus:ring-indigo-500',
 
   // Buttons
-  btnPrimary: 'inline-flex items-center justify-center rounded-lg border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2',
-  btnDanger: 'inline-flex items-center justify-center rounded-lg border border-transparent bg-red-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2',
-  btnSuccess: 'inline-flex items-center justify-center rounded-lg border border-transparent bg-emerald-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2',
+  btnPrimary: 'inline-flex transform-gpu items-center justify-center rounded-lg border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-indigo-700 hover:shadow-lg active:translate-y-0 active:shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2',
+  btnDanger: 'inline-flex transform-gpu items-center justify-center rounded-lg border border-transparent bg-red-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-red-700 hover:shadow-lg active:translate-y-0 active:shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2',
+  btnSuccess: 'inline-flex transform-gpu items-center justify-center rounded-lg border border-transparent bg-emerald-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-emerald-700 hover:shadow-lg active:translate-y-0 active:shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2',
   btnDisabled: 'inline-flex items-center justify-center rounded-lg border border-transparent bg-gray-300 px-4 py-2 text-sm font-medium text-white shadow-sm cursor-not-allowed',
-  btnOutline: 'inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2',
-  btnWide: 'flex w-full justify-center rounded-lg border border-transparent px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors',
+  btnOutline: 'inline-flex transform-gpu items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-gray-50 hover:shadow-md active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2',
+  btnWide: 'flex w-full transform-gpu justify-center rounded-lg border border-transparent px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0',
   inputLightReadOnly: 'block w-full rounded-lg border border-gray-200 bg-gray-50 py-2.5 pl-10 pr-10 text-sm text-gray-900 outline-none transition-colors',
 
   // Cards and surfaces
-  card: 'rounded-xl border border-gray-200 bg-white shadow-sm',
-  cardSubtle: 'rounded-xl border border-gray-100 bg-white shadow-sm',
-  cardPadded: 'rounded-xl border border-gray-200 bg-white p-6 shadow-sm',
+  card: 'rounded-xl border border-gray-200 bg-white shadow-sm transition-shadow duration-300',
+  cardSubtle: 'rounded-xl border border-gray-100 bg-white shadow-sm transition-shadow duration-300',
+  cardPadded: 'rounded-xl border border-gray-200 bg-white p-6 shadow-sm transition-shadow duration-300',
+  cardInteractive: 'interactive-lift interactive-press rounded-xl border border-gray-200 bg-white shadow-sm',
   iconBox: 'flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600',
 
   // Layout
@@ -33,10 +34,10 @@ export const cls = {
   backLink: 'mb-4 inline-flex items-center text-sm font-medium text-indigo-600 transition-colors hover:text-indigo-700',
 
   // Nav links
-  navLinkActive: 'inline-flex items-center border-b-2 border-indigo-500 px-1 pt-1 text-sm font-medium text-gray-900 transition-colors',
-  navLinkInactive: 'inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 transition-colors hover:border-gray-300 hover:text-gray-700',
-  mobileNavLinkActive: 'block border-l-4 border-indigo-500 bg-indigo-50 py-2 pl-3 pr-4 text-base font-medium text-indigo-700',
-  mobileNavLinkInactive: 'block border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-500 transition-colors hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700',
+  navLinkActive: 'inline-flex h-full transform-gpu items-center border-b-2 border-indigo-500 px-1 text-sm font-medium text-gray-900 transition-all duration-200 ease-out',
+  navLinkInactive: 'inline-flex h-full transform-gpu items-center border-b-2 border-transparent px-1 text-sm font-medium text-gray-500 transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-indigo-300 hover:text-indigo-700',
+  mobileNavLinkActive: 'block border-l-4 border-indigo-500 bg-indigo-50 py-2 pl-3 pr-4 text-base font-medium text-indigo-700 transition-all duration-200 ease-out',
+  mobileNavLinkInactive: 'block transform-gpu border-l-4 border-transparent py-2 pl-3 pr-4 text-base font-medium text-gray-500 transition-all duration-200 ease-out hover:translate-x-1 hover:border-indigo-300 hover:bg-indigo-50/60 hover:text-indigo-700',
 
   // Table
   th: 'px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-500',
