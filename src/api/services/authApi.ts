@@ -14,10 +14,18 @@ export type RegisterPayload = {
 
 export async function login(payload: LoginPayload): Promise<{ token: string }> {
   void payload;
-  return { token: 'mock-auth-token' };
+  localStorage.setItem("tenantId", "user-001");
+  return { token: "mock-auth-token" };
 }
 
-export async function register(payload: RegisterPayload): Promise<{ userId: string }> {
+export function logout(): void {
+  localStorage.removeItem("tenantId");
+  window.location.reload();
+}
+
+export async function register(
+  payload: RegisterPayload,
+): Promise<{ userId: string }> {
   void payload;
-  return { userId: 'mock-user-id' };
+  return { userId: "mock-user-id" };
 }

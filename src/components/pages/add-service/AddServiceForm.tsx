@@ -47,9 +47,9 @@ export function AddServiceForm({ carOptions }: Props) {
     },
   });
 
-  const onSubmit = (formData: AddServiceFormData) => {
+  const onSubmit = async (formData: AddServiceFormData) => {
     const serviceRecord = buildMaintenanceRecord({ cars, formData, today: localToday });
-    addRecord(serviceRecord);
+    await addRecord(serviceRecord);
 
     confetti({
       particleCount: 100,

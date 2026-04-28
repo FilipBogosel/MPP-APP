@@ -1,5 +1,11 @@
 import { createContext, useContext, useEffect, useMemo, useState, type PropsWithChildren } from 'react';
-import { fetchCars, fetchMaintenanceRecords } from '@/api/services/maintenanceApi';
+import {
+  createRecord as createRecordApi,
+  deleteRecord as deleteRecordApi,
+  fetchMaintenanceRecords,
+  updateRecord as updateRecordApi,
+} from '@/api/services/maintenanceApi';
+import { mockCars } from '@/api/mock-data/mockCars';
 import type { Car, MaintenanceRecord, SelectOption } from '@/types';
 
 export interface MaintenanceContextValue {
@@ -7,9 +13,9 @@ export interface MaintenanceContextValue {
   carOptions: ReadonlyArray<SelectOption>;
   isLoading: boolean;
   records: ReadonlyArray<MaintenanceRecord>;
-  addRecord: (record: MaintenanceRecord) => void;
-  updateRecord: (id: string, record: Partial<MaintenanceRecord>) => void;
-  deleteRecord: (id: string) => void;
+  addRecord: (record: MaintenanceRecord) => Promise<void>;
+  updateRecord: (id: string, record: Partial<MaintenanceRecord>) => Promise<void>;
+  deleteRecord: (id: string) => Promise<void>;
 }
 
 const MaintenanceContext = createContext<MaintenanceContextValue | undefined>(undefined);
@@ -23,14 +29,17 @@ export function MaintenanceProvider({ children }: PropsWithChildren) {
     let isMounted = true;
 
     const load = async () => {
-      const [nextRecords, nextCars] = await Promise.all([
-        fetchMaintenanceRecords(),
-        fetchCars(),
-      ]);
+      let nextRecords: Array<MaintenanceRecord> = [];
+
+      try {
+        nextRecords = await fetchMaintenanceRecords();
+      } catch (error) {
+        console.error('Failed to load maintenance records', error);
+      }
 
       if (!isMounted) return;
       setRecords(nextRecords);
-      setCars(nextCars);
+      setCars(mockCars);
       setIsLoading(false);
     };
 
@@ -40,22 +49,37 @@ export function MaintenanceProvider({ children }: PropsWithChildren) {
     };
   }, []);
 
-  const addRecord = (record: MaintenanceRecord) => {
-    setRecords((previous) => [...previous, record]);
+  const addRecord = async (record: MaintenanceRecord) => {
+    try {
+      const savedRecord = await createRecordApi(record);
+      setRecords((previous) => [...previous, savedRecord]);
+    } catch (error) {
+      console.error('Failed to create maintenance record', error);
+    }
   };
 
-  const updateRecord = (id: string, record: Partial<MaintenanceRecord>) => {
-    setRecords((previous) =>
-      previous.map((existingRecord) =>
-        existingRecord.id === id
-          ? { ...existingRecord, ...record, id: existingRecord.id }
-          : existingRecord,
-      ),
-    );
+  const updateRecord = async (id: string, record: Partial<MaintenanceRecord>) => {
+    try {
+      const savedRecord = await updateRecordApi(id, record);
+      setRecords((previous) =>
+        previous.map((existingRecord) =>
+          existingRecord.id === id
+            ? { ...existingRecord, ...savedRecord }
+            : existingRecord,
+        ),
+      );
+    } catch (error) {
+      console.error('Failed to update maintenance record', error);
+    }
   };
 
-  const deleteRecord = (id: string) => {
-    setRecords((previous) => previous.filter((record) => record.id !== id));
+  const deleteRecord = async (id: string) => {
+    try {
+      await deleteRecordApi(id);
+      setRecords((previous) => previous.filter((record) => record.id !== id));
+    } catch (error) {
+      console.error('Failed to delete maintenance record', error);
+    }
   };
 
   const carOptions = useMemo<ReadonlyArray<SelectOption>>(
