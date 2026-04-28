@@ -4,8 +4,11 @@ import { cls } from '@/styles/classes';
 import { AnalyticsCharts } from './analytics/AnalyticsCharts';
 
 export function DashboardOverviewAnalyticsPanel() {
-  const { records: contextRecords } = useMaintenanceContext();
-  const { generatedCount, intervalMs, isRunning, records, start, stop } = useOverviewAutoRecords(contextRecords);
+  const { records: contextRecords, addRecord } = useMaintenanceContext();
+  const { generatedCount, intervalMs, isRunning, records, start, stop } = useOverviewAutoRecords({
+    baseRecords: contextRecords,
+    onAddRecord: addRecord,
+  });
 
   return (
     <div className="mx-auto max-w-4xl space-y-6">

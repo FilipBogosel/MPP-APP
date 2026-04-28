@@ -54,18 +54,22 @@ export async function fetchMaintenanceRecords(): Promise<
   return handleJsonResponse<Array<MaintenanceRecord>>(response);
 }
 
-export async function createRecord(
-  record: Omit<MaintenanceRecord, "id" | "createdAt" | "updatedAt">,
-): Promise<MaintenanceRecord> {
-  const { id, createdAt, updatedAt, ...payload } = record as any;
-  const response = await fetch(`${API_URL}/records`, {
-    method: "POST",
-    headers: getAuthHeaders(),
-    body: JSON.stringify(payload),
-  });
+export const createRecord = async (record: Omit<MaintenanceRecord, 'id' | 'createdAt' | 'updatedAt'>): Promise<MaintenanceRecord> => {
+  // 1. Physically extract and discard id, createdAt, and updatedAt
+  const { id, createdAt, updatedAt, ...safePayload } = record as any;
 
-  return handleJsonResponse<MaintenanceRecord>(response);
-}
+  // 2. Send the safePayload instead of the raw record
+  const response = await fetch(`${API_URL}/records`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(safePayload)
+  });
+  
+  if (!response.ok) {
+    throw new Error('Failed to create record');
+  }
+  return response.json();
+};
 
 export async function updateRecord(
   id: string,

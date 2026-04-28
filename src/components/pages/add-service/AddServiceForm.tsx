@@ -39,7 +39,7 @@ export function AddServiceForm({ carOptions }: Props) {
     mode: 'onBlur',
     defaultValues: {
       carId: carOptions[0]?.id ?? '',
-      serviceName: '',
+      serviceType: '' as any,
       date: localToday,
       shopName: '',
       location: '',

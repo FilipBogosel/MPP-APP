@@ -20,11 +20,11 @@ export type LifecycleMetric = {
   title: string;
   value: string;
   subtitle: string;
-  tone: 'indigo' | 'emerald';
+  tone: "indigo" | "emerald";
 };
 
 export type LifecycleTimelineItem = {
-  level: 'Routine' | 'Warning' | 'Critical';
+  level: "Routine" | "Warning" | "Critical";
   title: string;
   date: string;
   estimate: string;
@@ -33,13 +33,19 @@ export type LifecycleTimelineItem = {
 export type ImportMappingRow = {
   id: string;
   source: string;
-  status: 'mapped' | 'missing';
+  status: "mapped" | "missing";
   mappedLabel?: string;
 };
 
 export type ServiceRecordFields = {
   carId: string;
-  serviceName: string;
+  serviceType:
+    | "OIL_CHANGE"
+    | "BRAKE_SERVICE"
+    | "TIRE_SERVICE"
+    | "ENGINE_SERVICE"
+    | "INSPECTION"
+    | "OTHER";
   date: string;
   kilometers: string;
   nextKilometers: string;
@@ -49,7 +55,10 @@ export type ServiceRecordFields = {
   notes: string;
 };
 
-export type AddServiceFormData = Omit<ServiceRecordFields, 'kilometers' | 'nextKilometers' | 'cost'> & {
+export type AddServiceFormData = Omit<
+  ServiceRecordFields,
+  "kilometers" | "nextKilometers" | "cost"
+> & {
   kilometers: number;
   nextKilometers: number;
   cost: number;

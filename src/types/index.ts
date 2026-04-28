@@ -1,12 +1,21 @@
 export type ISODate = string;
 
+export const SERVICE_TYPES = [
+  "OIL_CHANGE",
+  "BRAKE_SERVICE",
+  "TIRE_SERVICE",
+  "ENGINE_SERVICE",
+  "INSPECTION",
+  "OTHER",
+] as const;
+
 export type MaintenanceServiceType =
-  | 'OIL_CHANGE'
-  | 'BRAKE_SERVICE'
-  | 'TIRE_SERVICE'
-  | 'ENGINE_SERVICE'
-  | 'INSPECTION'
-  | 'OTHER';
+  | "OIL_CHANGE"
+  | "BRAKE_SERVICE"
+  | "TIRE_SERVICE"
+  | "ENGINE_SERVICE"
+  | "INSPECTION"
+  | "OTHER";
 
 export interface User {
   id: string;
@@ -55,4 +64,4 @@ export type {
   SelectOption,
   ServiceRecordFields,
   ServiceRecordFormData,
-} from './viewModels';
+} from "./viewModels";

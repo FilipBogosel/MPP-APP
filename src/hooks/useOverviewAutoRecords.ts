@@ -1,8 +1,11 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from "react";
 
-import type { MaintenanceRecord } from '@/types';
+import type { MaintenanceRecord } from "@/types";
 
-import { AUTO_ADD_INTERVAL_MS, createAutoRecord } from './overviewAutoRecordFactory';
+import {
+  AUTO_ADD_INTERVAL_MS,
+  createAutoRecord,
+} from "./overviewAutoRecordFactory";
 
 type UseOverviewAutoRecordsResult = {
   generatedCount: number;
@@ -13,8 +16,17 @@ type UseOverviewAutoRecordsResult = {
   stop: () => void;
 };
 
-export function useOverviewAutoRecords(baseRecords: ReadonlyArray<MaintenanceRecord>): UseOverviewAutoRecordsResult {
-  const [records, setRecords] = useState<ReadonlyArray<MaintenanceRecord>>(baseRecords);
+type UseOverviewAutoRecordsProps = {
+  baseRecords: ReadonlyArray<MaintenanceRecord>;
+  onAddRecord?: (record: MaintenanceRecord) => Promise<void>;
+};
+
+export function useOverviewAutoRecords({
+  baseRecords,
+  onAddRecord,
+}: UseOverviewAutoRecordsProps): UseOverviewAutoRecordsResult {
+  const [records, setRecords] =
+    useState<ReadonlyArray<MaintenanceRecord>>(baseRecords);
   const [generatedCount, setGeneratedCount] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const sequenceRef = useRef(0);
@@ -25,13 +37,24 @@ export function useOverviewAutoRecords(baseRecords: ReadonlyArray<MaintenanceRec
     sequenceRef.current = 0;
   }, [baseRecords]);
 
-  const appendRecord = useCallback(() => {
+  const appendRecord = useCallback(async () => {
     sequenceRef.current += 1;
     const autoRecord = createAutoRecord(sequenceRef.current);
 
+    // Add to local state immediately for UI feedback
     setRecords((previous) => [...previous, autoRecord]);
     setGeneratedCount((previous) => previous + 1);
-  }, []);
+
+    // If a callback is provided, also add to context/backend
+    if (onAddRecord) {
+      try {
+        await onAddRecord(autoRecord);
+      } catch (error) {
+        console.error("Failed to add auto-generated record to context:", error);
+        // Keep it in local state even if context add fails
+      }
+    }
+  }, [onAddRecord]);
 
   useEffect(() => {
     if (!isRunning) {
@@ -39,7 +62,7 @@ export function useOverviewAutoRecords(baseRecords: ReadonlyArray<MaintenanceRec
     }
 
     const intervalId = window.setInterval(() => {
-      appendRecord();
+      void appendRecord();
     }, AUTO_ADD_INTERVAL_MS);
 
     return () => {

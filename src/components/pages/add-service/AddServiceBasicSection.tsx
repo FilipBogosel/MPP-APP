@@ -9,6 +9,15 @@ type AddServiceBasicSectionProps = {
   register: UseFormRegister<AddServiceFormData>;
 };
 
+const SERVICE_TYPES = [
+  { value: 'OIL_CHANGE', label: 'Oil Change' },
+  { value: 'BRAKE_SERVICE', label: 'Brake Service' },
+  { value: 'TIRE_SERVICE', label: 'Tire Service' },
+  { value: 'ENGINE_SERVICE', label: 'Engine Service' },
+  { value: 'INSPECTION', label: 'Inspection' },
+  { value: 'OTHER', label: 'Other' }
+];
+
 const inputClasses =
   'mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-900 shadow-sm focus:border-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/20';
 const errorClasses = 'text-sm text-rose-600';
@@ -32,13 +41,21 @@ export function AddServiceBasicSection({ carOptions, errors, register }: AddServ
         {errors.carId ? <p className={errorClasses}>{errors.carId.message}</p> : null}
       </label>
 
+      {/* REPLACED: serviceName text input is now serviceType select dropdown */}
       <label className="space-y-1 text-sm font-medium text-slate-700 md:col-span-2">
         <span className="inline-flex items-center gap-2">
           <Wrench className="h-4 w-4 text-cyan-700" />
-          Service Name
+          Service Type
         </span>
-        <input className={inputClasses} placeholder="Oil change" {...register('serviceName')} />
-        {errors.serviceName ? <p className={errorClasses}>{errors.serviceName.message}</p> : null}
+        <select className={inputClasses} {...register('serviceType')}>
+          <option value="">Select a service type</option>
+          {SERVICE_TYPES.map((type) => (
+            <option key={type.value} value={type.value}>
+              {type.label}
+            </option>
+          ))}
+        </select>
+        {errors.serviceType ? <p className={errorClasses}>{errors.serviceType.message}</p> : null}
       </label>
 
       <label className="space-y-1 text-sm font-medium text-slate-700">
