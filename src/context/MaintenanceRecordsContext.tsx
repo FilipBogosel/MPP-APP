@@ -3,10 +3,14 @@ import {
   createRecord as createRecordApi,
   deleteRecord as deleteRecordApi,
   fetchMaintenanceRecords,
+  getAuthHeaders,
   updateRecord as updateRecordApi,
 } from '@/api/services/maintenanceApi';
+import { clearOfflineQueue, getOfflineQueue } from '@/api/services/syncService';
 import { mockCars } from '@/api/mock-data/mockCars';
 import type { Car, MaintenanceRecord, SelectOption } from '@/types';
+
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8081/api';
 
 export interface MaintenanceContextValue {
   cars: ReadonlyArray<Car>;
@@ -28,6 +32,43 @@ export function MaintenanceProvider({ children }: PropsWithChildren) {
   useEffect(() => {
     let isMounted = true;
 
+    const syncOfflineData = async () => {
+      const offlineQueue = getOfflineQueue();
+
+      if (offlineQueue.length === 0) {
+        return;
+      }
+
+      for (const action of offlineQueue) {
+        const requestBody =
+          action.method === 'DELETE'
+            ? undefined
+            : action.method === 'POST'
+              ? (() => {
+                  const { id, createdAt, updatedAt, ...payload } = action.payload as any;
+                  return JSON.stringify(payload);
+                })()
+              : JSON.stringify(action.payload);
+
+        const response = await fetch(`${API_URL}${action.endpoint}`, {
+          method: action.method,
+          headers: getAuthHeaders(),
+          body: requestBody,
+        });
+
+        if (!response.ok) {
+          throw new Error(`Failed to sync queued action ${action.method} ${action.endpoint}`);
+        }
+      }
+
+      clearOfflineQueue();
+
+      const refreshedRecords = await fetchMaintenanceRecords();
+
+      if (!isMounted) return;
+      setRecords(refreshedRecords);
+    };
+
     const load = async () => {
       let nextRecords: Array<MaintenanceRecord> = [];
 
@@ -44,8 +85,11 @@ export function MaintenanceProvider({ children }: PropsWithChildren) {
     };
 
     void load();
+    window.addEventListener('online', syncOfflineData);
+
     return () => {
       isMounted = false;
+      window.removeEventListener('online', syncOfflineData);
     };
   }, []);
 

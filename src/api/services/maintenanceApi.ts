@@ -1,5 +1,6 @@
 import { mockCars } from "@/api/mockData";
 import type { Car, MaintenanceRecord } from "@/types";
+import { addToOfflineQueue } from "./syncService";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8081/api";
 
@@ -7,7 +8,7 @@ function getTenantId() {
   return localStorage.getItem("tenantId") || "user-001";
 }
 
-function getAuthHeaders() {
+export function getAuthHeaders() {
   return {
     "Content-Type": "application/json",
     "X-Mock-User": getTenantId(),
@@ -54,27 +55,44 @@ export async function fetchMaintenanceRecords(): Promise<
   return handleJsonResponse<Array<MaintenanceRecord>>(response);
 }
 
-export const createRecord = async (record: Omit<MaintenanceRecord, 'id' | 'createdAt' | 'updatedAt'>): Promise<MaintenanceRecord> => {
-  // 1. Physically extract and discard id, createdAt, and updatedAt
+export async function createRecord(
+  record: Omit<MaintenanceRecord, "id" | "createdAt" | "updatedAt">,
+): Promise<MaintenanceRecord> {
+  if (!navigator.onLine) {
+    addToOfflineQueue("POST", "/records", record);
+
+    return Promise.resolve({
+      ...(record as MaintenanceRecord),
+      id: `temp-${Date.now()}`,
+      createdAt: new Date().toISOString().split("T")[0],
+      updatedAt: new Date().toISOString().split("T")[0],
+    });
+  }
+
   const { id, createdAt, updatedAt, ...safePayload } = record as any;
 
-  // 2. Send the safePayload instead of the raw record
   const response = await fetch(`${API_URL}/records`, {
-    method: 'POST',
+    method: "POST",
     headers: getAuthHeaders(),
-    body: JSON.stringify(safePayload)
+    body: JSON.stringify(safePayload),
   });
-  
-  if (!response.ok) {
-    throw new Error('Failed to create record');
-  }
-  return response.json();
-};
+
+  return handleJsonResponse<MaintenanceRecord>(response);
+}
 
 export async function updateRecord(
   id: string,
   record: Partial<MaintenanceRecord>,
 ): Promise<MaintenanceRecord> {
+  if (!navigator.onLine) {
+    addToOfflineQueue("PUT", `/records/${id}`, record);
+
+    return Promise.resolve({
+      ...(record as MaintenanceRecord),
+      id,
+    });
+  }
+
   const response = await fetch(`${API_URL}/records/${id}`, {
     method: "PUT",
     headers: getAuthHeaders(),
@@ -85,6 +103,11 @@ export async function updateRecord(
 }
 
 export async function deleteRecord(id: string): Promise<void> {
+  if (!navigator.onLine) {
+    addToOfflineQueue("DELETE", `/records/${id}`);
+    return Promise.resolve();
+  }
+
   const response = await fetch(`${API_URL}/records/${id}`, {
     method: "DELETE",
     headers: getAuthHeaders(),
