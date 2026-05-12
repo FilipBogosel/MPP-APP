@@ -42,7 +42,7 @@ export function ChatPanel() {
       .then((history) => {
         // Defensive check: Only spread if the backend actually returned an array
         if (Array.isArray(history)) {
-          setMessages((prev) => [...history, ...prev]);
+          setMessages(history);
         } else {
           console.error("Expected an array of messages, but got:", history);
         }
