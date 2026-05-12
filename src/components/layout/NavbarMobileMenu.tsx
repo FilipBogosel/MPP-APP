@@ -1,6 +1,8 @@
 import { AnimatePresence, motion } from 'framer-motion';
+import { ShieldAlert } from 'lucide-react';
 import { Link } from 'react-router';
 
+import { getStoredUser } from '@/api/services/authApi';
 import { cls } from '@/styles/classes';
 
 import { navItems } from './navbarData';
@@ -12,6 +14,9 @@ type NavbarMobileMenuProps = {
 };
 
 export function NavbarMobileMenu({ isActive, isOpen, onNavigate }: NavbarMobileMenuProps) {
+  const user = getStoredUser();
+  const isAdmin = user?.role === 'ADMIN';
+
   return (
     <AnimatePresence initial={false}>
       {isOpen ? (
@@ -43,6 +48,25 @@ export function NavbarMobileMenu({ isActive, isOpen, onNavigate }: NavbarMobileM
                 </Link>
               </motion.div>
             ))}
+            {isAdmin && (
+              <motion.div
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -6 }}
+                transition={{ duration: 0.16, ease: 'easeOut' }}
+              >
+                <Link
+                  to="/admin"
+                  onClick={onNavigate}
+                  className={isActive('/admin') ? cls.mobileNavLinkActive : cls.mobileNavLinkInactive}
+                >
+                  <div className="flex items-center">
+                    <ShieldAlert className="w-5 h-5 mr-3" />
+                    Admin
+                  </div>
+                </Link>
+              </motion.div>
+            )}
           </div>
         </motion.div>
       ) : null}

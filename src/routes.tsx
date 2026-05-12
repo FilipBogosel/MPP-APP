@@ -1,6 +1,8 @@
 import { createBrowserRouter, Navigate } from 'react-router';
+import { AdminRoute } from './components/auth/AdminRoute';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { PublicRoute } from './components/auth/PublicRoute';
+import { AdminPage } from './components/pages/admin/AdminPage';
 import { AddServicePage } from './components/pages/add-service/AddServicePage';
 import { DashboardSplitPage } from './components/pages/DashboardSplitPage';
 import { AnalyticsPage } from './components/pages/analytics/AnalyticsPage';
@@ -41,6 +43,12 @@ export const router = createBrowserRouter([
           { path: 'import', Component: DataImportPage },
           { path: 'add-service', Component: AddServicePage },
           { path: 'service/:id', Component: ServiceDetailPage },
+        ],
+      },
+      {
+        element: <AdminRoute />,
+        children: [
+          { path: 'admin', Component: AdminPage },
         ],
       },
       { path: '*', element: <Navigate to="/" replace /> },
