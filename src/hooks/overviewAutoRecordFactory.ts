@@ -26,9 +26,9 @@ function toIsoDateOnly(date: Date): string {
   return date.toISOString().slice(0, 10);
 }
 
-export function createAutoRecord(sequence: number): MaintenanceRecord {
-  const carId = `auto-car-${sequence}-${faker.string.alphanumeric(6).toLowerCase()}`;
-  const userId = `auto-user-${faker.string.alphanumeric(8).toLowerCase()}`;
+export function createAutoRecord(sequence: number, realCarId: string, realUserId: string): MaintenanceRecord {
+  const carId = realCarId;
+  const userId = realUserId;
   const serviceType = faker.helpers.arrayElement(AUTO_SERVICE_TYPES);
   const serviceDate = toIsoDateOnly(faker.date.recent({ days: 45 }));
   const odometerKm = faker.number.int({ min: 18000, max: 220000 });

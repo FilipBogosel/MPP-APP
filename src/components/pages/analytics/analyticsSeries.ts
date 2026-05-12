@@ -5,8 +5,9 @@ const MONTH_LABELS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'S
 
 export function getExpenditureData(records: ReadonlyArray<MaintenanceRecord>): ReadonlyArray<AnalyticsBreakdownItem> {
   const totals = new Map<string, number>();
+  const safeRecords = records.filter((r): r is MaintenanceRecord => r != null);
 
-  records.forEach((record) => {
+  safeRecords.forEach((record) => {
     const label = formatServiceType(record.serviceType);
     totals.set(label, (totals.get(label) ?? 0) + record.costUsd);
   });
@@ -22,8 +23,9 @@ export function getImpactData(records: ReadonlyArray<MaintenanceRecord>): Readon
     Significant: 0,
     Overhaul: 0,
   };
+  const safeRecords = records.filter((r): r is MaintenanceRecord => r != null);
 
-  records.forEach((record) => {
+  safeRecords.forEach((record) => {
     if (record.costUsd >= 1000) {
       counters.Overhaul += 1;
     } else if (record.costUsd >= 200) {
@@ -42,8 +44,9 @@ export function getImpactData(records: ReadonlyArray<MaintenanceRecord>): Readon
 
 export function getAnnualData(records: ReadonlyArray<MaintenanceRecord>): ReadonlyArray<AnalyticsAnnualItem> {
   const monthTotals = Array.from({ length: 12 }, () => 0);
+  const safeRecords = records.filter((r): r is MaintenanceRecord => r != null);
 
-  records.forEach((record) => {
+  safeRecords.forEach((record) => {
     const date = new Date(record.serviceDate);
     if (!Number.isNaN(date.getTime())) {
       monthTotals[date.getMonth()] += record.costUsd;

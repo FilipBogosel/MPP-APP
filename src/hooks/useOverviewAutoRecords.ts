@@ -19,11 +19,15 @@ type UseOverviewAutoRecordsResult = {
 type UseOverviewAutoRecordsProps = {
   baseRecords: ReadonlyArray<MaintenanceRecord>;
   onAddRecord?: (record: MaintenanceRecord) => Promise<void>;
+  carId: string;
+  userId: string;
 };
 
 export function useOverviewAutoRecords({
   baseRecords,
   onAddRecord,
+  carId,
+  userId,
 }: UseOverviewAutoRecordsProps): UseOverviewAutoRecordsResult {
   const [records, setRecords] =
     useState<ReadonlyArray<MaintenanceRecord>>(baseRecords);
@@ -39,7 +43,7 @@ export function useOverviewAutoRecords({
 
   const appendRecord = useCallback(async () => {
     sequenceRef.current += 1;
-    const autoRecord = createAutoRecord(sequenceRef.current);
+    const autoRecord = createAutoRecord(sequenceRef.current, carId, userId);
 
     // Add to local state immediately for UI feedback
     setRecords((previous) => [...previous, autoRecord]);
@@ -54,7 +58,7 @@ export function useOverviewAutoRecords({
         // Keep it in local state even if context add fails
       }
     }
-  }, [onAddRecord]);
+  }, [onAddRecord, carId, userId]);
 
   useEffect(() => {
     if (!isRunning) {

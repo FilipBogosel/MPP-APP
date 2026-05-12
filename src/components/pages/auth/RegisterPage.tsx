@@ -1,12 +1,13 @@
 import { AtSign, Calendar, Car, Lock, Mail, User } from 'lucide-react';
 import { useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { register } from '@/api/services/authApi';
 import { FormField } from '@/components/FormField';
 import { cls } from '@/styles/classes';
 
 export function RegisterPage() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullName: '',
     username: '',
@@ -16,6 +17,7 @@ export function RegisterPage() {
     password: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData((previous) => ({ ...previous, [event.target.name]: event.target.value }));
@@ -23,9 +25,16 @@ export function RegisterPage() {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
+    setError(null);
     setIsSubmitting(true);
-    await register(formData);
-    setIsSubmitting(false);
+    try {
+      await register(formData.username, formData.password, formData.email);
+      navigate('/dashboard/overview', { replace: true });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Registration failed');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -47,12 +56,16 @@ export function RegisterPage() {
               <FormField id="password" label="Password" icon={Lock} value={formData.password} onChange={handleChange} placeholder="••••••••" required colSpan2 type="password" />
             </div>
 
+            {error !== null && (
+              <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">{error}</p>
+            )}
+
             <button
               type="submit"
               disabled={isSubmitting}
               className={`${cls.btnWide} bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2`}
             >
-              {isSubmitting ? 'Creating Account...' : 'Create Account'}
+              {isSubmitting ? 'Creating Account…' : 'Create Account'}
             </button>
 
             <div className="mt-6">
@@ -66,10 +79,7 @@ export function RegisterPage() {
               </div>
 
               <div className="mt-6">
-                <Link
-                  to="/login"
-                  className={`${cls.btnOutline} w-full`}
-                >
+                <Link to="/login" className={`${cls.btnOutline} w-full`}>
                   Log in
                 </Link>
               </div>

@@ -4,10 +4,15 @@ import { cls } from '@/styles/classes';
 import { AnalyticsCharts } from './analytics/AnalyticsCharts';
 
 export function DashboardOverviewAnalyticsPanel() {
-  const { records: contextRecords, addRecord } = useMaintenanceContext();
+  const { records: contextRecords, addRecord, cars } = useMaintenanceContext();
+  const firstCar = cars[0];
+  const autoCarId = firstCar?.id ?? '';
+  const autoUserId = firstCar?.userId ?? '';
   const { generatedCount, intervalMs, isRunning, records, start, stop } = useOverviewAutoRecords({
     baseRecords: contextRecords,
     onAddRecord: addRecord,
+    carId: autoCarId,
+    userId: autoUserId,
   });
 
   return (
@@ -24,8 +29,8 @@ export function DashboardOverviewAnalyticsPanel() {
           <button
             type="button"
             onClick={start}
-            disabled={isRunning}
-            className={isRunning ? cls.btnDisabled : cls.btnPrimary}
+            disabled={isRunning || !autoCarId}
+            className={isRunning || !autoCarId ? cls.btnDisabled : cls.btnPrimary}
           >
             Start Auto Add ({intervalMs / 1000}s)
           </button>
@@ -44,6 +49,11 @@ export function DashboardOverviewAnalyticsPanel() {
           Status: <span className={isRunning ? 'font-semibold text-emerald-600' : 'font-semibold text-gray-700'}>{isRunning ? 'Running' : 'Stopped'}</span>
           {' '}• Added records: <span className="font-semibold text-gray-900">{generatedCount}</span>
         </p>
+        {!autoCarId && (
+          <p className="text-xs text-amber-600 mt-1">
+            Add a car to your garage before using auto-add.
+          </p>
+        )}
       </div>
 
       <AnalyticsCharts recordsOverride={records} />

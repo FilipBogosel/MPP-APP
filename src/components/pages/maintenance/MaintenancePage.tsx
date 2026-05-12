@@ -1,5 +1,6 @@
-import { Pagination } from '@/components/Pagination';
+import { useEffect, useRef } from 'react';
 import { useMaintenanceContext } from '@/context/MaintenanceRecordsContext';
+import useInfiniteRecords from '@/hooks/useInfiniteRecords';
 import { useMaintenanceTable } from '@/hooks/useMaintenanceTable';
 import { cls } from '@/styles/classes';
 import { MaintenanceContent } from './MaintenanceContent';
@@ -11,20 +12,36 @@ type Props = {
 
 export function MaintenancePage({ forceTableView = false }: Props) {
   const { carOptions, deleteRecord } = useMaintenanceContext();
+  const { records, isFetchingMore, hasMore, loadMore } = useInfiniteRecords();
   const {
     currentData,
-    currentPage,
     dateOrder,
-    itemsPerPage,
     selectedCarId,
-    setCurrentPage,
     setDateOrder,
     setSelectedCarId,
     setViewMode,
-    totalItems,
-    totalPages,
     viewMode,
-  } = useMaintenanceTable();
+  } = useMaintenanceTable({ records });
+
+  const sentinelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      const entry = entries[0];
+      if (entry?.isIntersecting && hasMore && !isFetchingMore) {
+        loadMore();
+      }
+    });
+
+    observer.observe(sentinel);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [hasMore, isFetchingMore, loadMore]);
 
   const handleDeleteRecord = (id: string) => {
     if (window.confirm('Delete this maintenance record?')) {
@@ -85,13 +102,14 @@ export function MaintenancePage({ forceTableView = false }: Props) {
           onDelete={handleDeleteRecord}
         />
 
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          totalItems={totalItems}
-          itemsPerPage={itemsPerPage}
-          onPageChange={setCurrentPage}
-        />
+        {isFetchingMore && (
+          <p className="mt-6 text-center text-sm text-slate-500">Loading more...</p>
+        )}
+        {!hasMore && records.length > 0 && (
+          <p className="mt-6 text-center text-sm text-slate-500">All records loaded</p>
+        )}
+
+        <div ref={sentinelRef} className="h-1 w-full" />
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import confetti from 'canvas-confetti';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router';
 import { useMaintenanceContext } from '@/context/MaintenanceRecordsContext';
@@ -29,6 +30,7 @@ export function AddServiceForm({ carOptions }: Props) {
   const navigate = useNavigate();
   const { addRecord, cars } = useMaintenanceContext();
   const localToday = getLocalDateIso();
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const {
     formState: { errors, isSubmitting },
@@ -48,8 +50,15 @@ export function AddServiceForm({ carOptions }: Props) {
   });
 
   const onSubmit = async (formData: AddServiceFormData) => {
+    setSubmitError(null);
     const serviceRecord = buildMaintenanceRecord({ cars, formData, today: localToday });
-    await addRecord(serviceRecord);
+
+    try {
+      await addRecord(serviceRecord);
+    } catch {
+      setSubmitError('Failed to save the record. Please check your vehicle selection and try again.');
+      return;
+    }
 
     confetti({
       particleCount: 100,
@@ -93,6 +102,9 @@ export function AddServiceForm({ carOptions }: Props) {
               Save Record
             </button>
           </div>
+          {submitError && (
+            <p className="mt-2 text-sm text-red-600">{submitError}</p>
+          )}
         </div>
       </form>
     </div>

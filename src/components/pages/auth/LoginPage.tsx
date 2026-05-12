@@ -1,14 +1,16 @@
-import { Lock, Mail, Wrench } from 'lucide-react';
+import { Lock, User, Wrench } from 'lucide-react';
 import { useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { login } from '@/api/services/authApi';
 import { FormField } from '@/components/FormField';
 import { cls } from '@/styles/classes';
 
 export function LoginPage() {
-  const [formData, setFormData] = useState({ email: '', password: '' });
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({ username: '', password: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData((previous) => ({ ...previous, [event.target.name]: event.target.value }));
@@ -16,9 +18,16 @@ export function LoginPage() {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
+    setError(null);
     setIsSubmitting(true);
-    await login(formData);
-    setIsSubmitting(false);
+    try {
+      await login(formData.username, formData.password);
+      navigate('/dashboard/overview', { replace: true });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Login failed');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -34,15 +43,19 @@ export function LoginPage() {
           </div>
 
           <form className="space-y-6" onSubmit={handleSubmit}>
-            <FormField id="email" label="Email" icon={Mail} value={formData.email} onChange={handleChange} placeholder="driver@example.com" type="email" required />
+            <FormField id="username" label="Username" icon={User} value={formData.username} onChange={handleChange} placeholder="your_username" required />
             <FormField id="password" label="Password" icon={Lock} value={formData.password} onChange={handleChange} placeholder="••••••••" type="password" required />
+
+            {error !== null && (
+              <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-600">{error}</p>
+            )}
 
             <button
               type="submit"
               disabled={isSubmitting}
               className={`${cls.btnWide} bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2`}
             >
-              {isSubmitting ? 'Signing In...' : 'Sign In'}
+              {isSubmitting ? 'Signing In…' : 'Sign In'}
             </button>
 
             <div className="mt-4 flex flex-col space-y-3">
