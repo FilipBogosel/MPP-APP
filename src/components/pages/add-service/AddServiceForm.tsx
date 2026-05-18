@@ -1,76 +1,19 @@
-import { zodResolver } from '@hookform/resolvers/zod';
-import confetti from 'canvas-confetti';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { Link, useNavigate } from 'react-router';
-import { useMaintenanceContext } from '@/context/MaintenanceRecordsContext';
+import { Link } from 'react-router';
 import { cls } from '@/styles/classes';
-
-import type { AddServiceFormData, SelectOption } from '@/types';
+import type { SelectOption } from '@/types';
 import { AddServiceBasicSection } from './AddServiceBasicSection';
 import { AddServiceNotesSection } from './AddServiceNotesSection';
 import { AddServiceShopCostSection } from './AddServiceShopCostSection';
 import { AddServiceUploadSection } from './AddServiceUploadSection';
-import { buildMaintenanceRecord } from './addServiceRecordFactory';
-import { getAddServiceValidationSchema } from './addServiceValidation';
+import { useAddServiceForm } from './useAddServiceForm';
 
 type Props = {
   carOptions: ReadonlyArray<SelectOption>;
 };
 
-function getLocalDateIso() {
-  const now = new Date();
-  const local = new Date(now.getTime() - (now.getTimezoneOffset() * 60000));
-  return local.toISOString().split('T')[0];
-}
-
-const addServiceSchema = getAddServiceValidationSchema();
-
 export function AddServiceForm({ carOptions }: Props) {
-  const navigate = useNavigate();
-  const { addRecord, cars } = useMaintenanceContext();
-  const localToday = getLocalDateIso();
-  const [submitError, setSubmitError] = useState<string | null>(null);
-
-  const {
-    formState: { errors, isSubmitting },
-    handleSubmit,
-    register,
-  } = useForm<AddServiceFormData>({
-    resolver: zodResolver(addServiceSchema),
-    mode: 'onBlur',
-    defaultValues: {
-      carId: carOptions[0]?.id ?? '',
-      serviceType: '' as any,
-      date: localToday,
-      shopName: '',
-      location: '',
-      notes: '',
-    },
-  });
-
-  const onSubmit = async (formData: AddServiceFormData) => {
-    setSubmitError(null);
-    const serviceRecord = buildMaintenanceRecord({ cars, formData, today: localToday });
-
-    try {
-      await addRecord(serviceRecord);
-    } catch {
-      setSubmitError('Failed to save the record. Please check your vehicle selection and try again.');
-      return;
-    }
-
-    confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.6 },
-      colors: ['#4F46E5', '#10B981', '#F59E0B'],
-    });
-
-    setTimeout(() => {
-      navigate('/dashboard/records');
-    }, 800);
-  };
+  const { form, onSubmit, submitError } = useAddServiceForm(carOptions);
+  const { formState: { errors, isSubmitting }, handleSubmit, register } = form;
 
   return (
     <div className={`overflow-hidden ${cls.card}`}>
@@ -95,16 +38,21 @@ export function AddServiceForm({ carOptions }: Props) {
 
         <div className="border-t border-gray-200 pt-5">
           <div className="flex justify-end gap-3">
-            <Link to="/dashboard/records" className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50">
+            <Link
+              to="/dashboard/records"
+              className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50"
+            >
               Cancel
             </Link>
-            <button type="submit" disabled={isSubmitting} className={isSubmitting ? cls.btnDisabled : cls.btnPrimary}>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className={isSubmitting ? cls.btnDisabled : cls.btnPrimary}
+            >
               Save Record
             </button>
           </div>
-          {submitError && (
-            <p className="mt-2 text-sm text-red-600">{submitError}</p>
-          )}
+          {submitError && <p className="mt-2 text-sm text-red-600">{submitError}</p>}
         </div>
       </form>
     </div>

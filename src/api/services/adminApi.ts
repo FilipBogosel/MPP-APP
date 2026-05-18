@@ -16,7 +16,7 @@ export type ActionLogEntry = {
   entityType: string;
   entityId: string | null;
   httpStatus: number;
-  timestamp: string;
+  loggedAt: string; 
 };
 
 export async function fetchObservationList(): Promise<ObservationEntry[]> {
@@ -26,11 +26,10 @@ export async function fetchObservationList(): Promise<ObservationEntry[]> {
   return handleJsonResponse<ObservationEntry[]>(response);
 }
 
-export async function fetchLogs(userId?: string): Promise<ActionLogEntry[]> {
-  const url = userId
-    ? `${API_URL}/admin/logs?userId=${encodeURIComponent(userId)}`
-    : `${API_URL}/admin/logs`;
-  const response = await fetch(url, { headers: getAuthHeaders() });
+export async function fetchLogs(userId?: string, page = 0, pageSize = 50): Promise<ActionLogEntry[]> {
+  const params = new URLSearchParams({ page: String(page), pageSize: String(pageSize) });
+  if (userId) params.set('userId', userId);
+  const response = await fetch(`${API_URL}/admin/logs?${params}`, { headers: getAuthHeaders() });
   return handleJsonResponse<ActionLogEntry[]>(response);
 }
 
