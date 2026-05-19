@@ -3,6 +3,7 @@ import { API_URL, getAuthHeaders } from "@/api/services/apiClient";
 import { fetchCars } from "@/api/services/carsApi";
 import { fetchRecordsPage } from "@/api/services/maintenanceRecordsApi";
 import { clearOfflineQueue, getOfflineQueue } from "@/api/services/syncService";
+import { getStoredUser } from "@/api/services/authApi";
 import type { Car, MaintenanceRecord } from "@/types";
 
 export function useMaintenanceData() {
@@ -11,6 +12,16 @@ export function useMaintenanceData() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // MaintenanceProvider now mounts inside ProtectedRoute, so by the time
+    // this effect runs the user should always have a token.  The guard is
+    // kept as defence-in-depth: if the token disappears between ProtectedRoute
+    // rendering and the effect firing (e.g. another tab calls logout), avoid
+    // making API calls that would return 401 and cause a navigation loop.
+    if (!getStoredUser()) {
+      setIsLoading(false);
+      return;
+    }
+
     let isMounted = true;
 
     const syncOfflineData = async () => {

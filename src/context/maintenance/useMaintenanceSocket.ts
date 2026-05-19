@@ -1,44 +1,67 @@
-import { useEffect, type Dispatch, type SetStateAction } from "react";
-import { API_URL } from "@/api/services/apiClient";
-import type { MaintenanceRecord } from "@/types";
-
-const WS_URL = API_URL.replace("http", "ws") + "/ws/records";
+import { useEffect, useRef, type Dispatch, type SetStateAction } from 'react';
+import { getWsUrl } from '@/api/services/apiClient';
+import { getStoredUser } from '@/api/services/authApi';
+import type { MaintenanceRecord } from '@/types';
 
 type RecordsSetter = Dispatch<SetStateAction<Array<MaintenanceRecord>>>;
 
+const RECONNECT_DELAY_MS = 3000;
+
 export function useMaintenanceSocket(setRecords: RecordsSetter) {
+  const reconnectTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   useEffect(() => {
+    const token = getStoredUser()?.token ?? '';
+    if (!token) return;
+
     let isMounted = true;
-    const socket = new WebSocket(WS_URL);
 
-    socket.onopen = () => {
-      console.log("WebSocket connected to:", WS_URL);
-    };
+    function connect() {
+      const socket = new WebSocket(
+        `${getWsUrl()}/api/ws/records?token=${encodeURIComponent(token)}`,
+      );
 
-    socket.onmessage = (event) => {
-      try {
-        const parsedRecord = JSON.parse(event.data) as MaintenanceRecord;
-        if (!parsedRecord || !parsedRecord.id) return;
-        if (!isMounted) return;
-        setRecords((previous) => [...previous, parsedRecord]);
-        window.dispatchEvent(new CustomEvent('ws:newRecord', { detail: parsedRecord }));
-        console.log("Received real-time update:", parsedRecord);
-      } catch (error) {
-        console.error("Failed to parse WebSocket message:", error);
-      }
-    };
+      socket.onopen = () => {
+        console.log('WebSocket connected to records');
+      };
 
-    socket.onclose = () => {
-      console.log("WebSocket disconnected from:", WS_URL);
-    };
+      socket.onmessage = (event) => {
+        try {
+          const parsedRecord = JSON.parse(event.data as string) as MaintenanceRecord;
+          if (!parsedRecord || !parsedRecord.id) return;
+          if (!isMounted) return;
+          setRecords((previous) => [...previous, parsedRecord]);
+          window.dispatchEvent(new CustomEvent('ws:newRecord', { detail: parsedRecord }));
+        } catch (error) {
+          console.error('Failed to parse WebSocket message:', error);
+        }
+      };
 
-    socket.onerror = (event) => {
-      console.error("WebSocket error:", event);
-    };
+      socket.onclose = (ev) => {
+        console.log('WebSocket disconnected from records, code:', ev.code);
+        // 1000 = normal close (we initiated it), 1008 = policy violation (bad token).
+        // Reconnect for everything else (network drop, server restart, etc.).
+        if (isMounted && ev.code !== 1000 && ev.code !== 1008) {
+          reconnectTimer.current = setTimeout(connect, RECONNECT_DELAY_MS);
+        }
+      };
+
+      socket.onerror = () => {
+        // onclose fires right after onerror; reconnect is handled there.
+      };
+
+      return socket;
+    }
+
+    const socket = connect();
 
     return () => {
       isMounted = false;
-      socket.close();
+      if (reconnectTimer.current) {
+        clearTimeout(reconnectTimer.current);
+        reconnectTimer.current = null;
+      }
+      socket.close(1000, 'component unmounted');
     };
   }, [setRecords]);
 }

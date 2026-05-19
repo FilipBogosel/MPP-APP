@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { fetchRecordsPage } from '@/api/services/maintenanceRecordsApi';
-import type { MaintenanceRecord } from '@/types';
+import { useCallback, useEffect, useRef, useState } from "react";
+import { fetchRecordsPage } from "@/api/services/maintenanceRecordsApi";
+import type { MaintenanceRecord } from "@/types";
 
 const PAGE_SIZE = 20;
 
@@ -59,8 +59,8 @@ export default function useInfiniteRecords() {
       });
       setTotalElements((prev) => prev + 1);
     };
-    window.addEventListener('ws:newRecord', handler);
-    return () => window.removeEventListener('ws:newRecord', handler);
+    window.addEventListener("ws:newRecord", handler);
+    return () => window.removeEventListener("ws:newRecord", handler);
   }, []);
 
   const loadMore = useCallback(async () => {
@@ -79,5 +79,17 @@ export default function useInfiniteRecords() {
     }
   }, []);
 
-  return { records, isLoading, isFetchingMore, hasMore, loadMore };
+  const removeRecord = useCallback((id: string) => {
+    setRecords((previous) => previous.filter((record) => record.id !== id));
+    setTotalElements((previous) => Math.max(0, previous - 1));
+  }, []);
+
+  return {
+    records,
+    isLoading,
+    isFetchingMore,
+    hasMore,
+    loadMore,
+    removeRecord,
+  };
 }

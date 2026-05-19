@@ -2,6 +2,16 @@ import type { MaintenanceRecord } from "@/types";
 import { getAuthHeaders, getGraphqlUrl, handleJsonResponse } from "./apiClient";
 import { addToOfflineQueue } from "./syncService";
 
+type GqlResponse<T> = { data: T | null; errors?: Array<{ message: string }> };
+
+function assertGqlData<T>(payload: GqlResponse<T>, field: string): T {
+  if (!payload.data) {
+    const msg = payload.errors?.[0]?.message ?? `GraphQL ${field} returned no data`;
+    throw new Error(msg);
+  }
+  return payload.data;
+}
+
 export async function createRecord(
   record: Omit<MaintenanceRecord, 'id' | 'createdAt' | 'updatedAt'>,
 ): Promise<MaintenanceRecord> {
@@ -26,8 +36,8 @@ export async function createRecord(
     }),
   });
 
-  const payload = await handleJsonResponse<{ data: { createRecord: MaintenanceRecord } }>(response);
-  return payload.data.createRecord;
+  const payload = await handleJsonResponse<GqlResponse<{ createRecord: MaintenanceRecord }>>(response);
+  return assertGqlData(payload, 'createRecord').createRecord;
 }
 
 export async function updateRecord(id: string, record: Partial<MaintenanceRecord>): Promise<MaintenanceRecord> {
@@ -52,8 +62,8 @@ export async function updateRecord(id: string, record: Partial<MaintenanceRecord
     }),
   });
 
-  const payload = await handleJsonResponse<{ data: { updateRecord: MaintenanceRecord } }>(response);
-  return payload.data.updateRecord;
+  const payload = await handleJsonResponse<GqlResponse<{ updateRecord: MaintenanceRecord }>>(response);
+  return assertGqlData(payload, 'updateRecord').updateRecord;
 }
 
 export async function deleteRecord(id: string): Promise<void> {
@@ -71,5 +81,6 @@ export async function deleteRecord(id: string): Promise<void> {
     }),
   });
 
-  await handleJsonResponse<{ data: { deleteRecord: boolean } }>(response);
+  const payload = await handleJsonResponse<GqlResponse<{ deleteRecord: boolean }>>(response);
+  assertGqlData(payload, 'deleteRecord');
 }

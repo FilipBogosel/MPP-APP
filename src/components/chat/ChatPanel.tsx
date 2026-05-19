@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { MessageCircle, Send, X } from 'lucide-react';
 import { useChatSocket } from './useChatSocket';
 import { ChatMessage } from './ChatMessage';
+import { getStoredUser } from '@/api/services/authApi';
 
 export function ChatPanel() {
   const [isOpen, setIsOpen] = useState(false);
@@ -9,7 +10,7 @@ export function ChatPanel() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const { messages, sendMessage } = useChatSocket(isOpen);
-  const currentUserId = localStorage.getItem('userId') ?? '';
+  const currentUserId = getStoredUser()?.userId ?? '';
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });

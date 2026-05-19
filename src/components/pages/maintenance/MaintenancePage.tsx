@@ -13,7 +13,7 @@ type Props = {
 
 export function MaintenancePage({ forceTableView = false }: Props) {
   const { carOptions, deleteRecord } = useMaintenanceContext();
-  const { records, isFetchingMore, hasMore, loadMore } = useInfiniteRecords();
+  const { records, isFetchingMore, hasMore, loadMore, removeRecord } = useInfiniteRecords();
   const {
     currentData,
     dateOrder,
@@ -44,9 +44,10 @@ export function MaintenancePage({ forceTableView = false }: Props) {
     };
   }, [hasMore, isFetchingMore, loadMore]);
 
-  const handleDeleteRecord = (id: string) => {
+  const handleDeleteRecord = async (id: string) => {
     if (window.confirm('Delete this maintenance record?')) {
-      deleteRecord(id);
+      await deleteRecord(id);
+      removeRecord(id);
     }
   };
 
